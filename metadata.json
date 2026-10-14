@@ -1,0 +1,6 @@
+{
+  "name": "CORE Agents",
+  "description": "Create and manage specialized AI agents that research, build, analyze, and handle repeatable work with human approval for consequential actions.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
