@@ -154,13 +154,11 @@ export const TemplatePreviewModal: React.FC<TemplatePreviewModalProps> = ({
                 <ShieldAlert size={13} className="text-[#F2C879]" />
                 <span>Required Permissions</span>
               </div>
-              <ul className="space-y-1.5 p-3 rounded-xl bg-[#09090D] border border-[#292936]">
-                {template.permissions.map((perm, idx) => (
-                  <li key={idx} className="text-[11px] text-[#A5A2B4]">
-                    • {perm}
-                  </li>
-                ))}
-              </ul>
+              <div className="space-y-1.5 p-3 rounded-xl bg-[#09090D] border border-[#292936] text-[11px] text-[#A5A2B4]">
+                <div>• Read-Only: {template.permissions.readOnly ? 'Enforced' : 'Unrestricted'}</div>
+                <div>• Network: {template.permissions.networkAccess}</div>
+                <div>• Action Gating: {template.permissions.actionGating}</div>
+              </div>
             </div>
           </div>
 

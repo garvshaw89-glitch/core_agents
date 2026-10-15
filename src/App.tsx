@@ -35,15 +35,19 @@ import { SettingsPage } from './pages/SettingsPage';
 import { AgentDetailDrawer } from './components/app/AgentDetailDrawer';
 import { ActivityDetailDrawer } from './components/app/ActivityDetailDrawer';
 import { CreateAgentModal } from './components/app/CreateAgentModal';
+import { AgentBuilderPage } from './pages/AgentBuilderPage';
 import { TemplateDefinition } from './data/templates';
 import { Agent, ActivityRecord } from './types/app';
 import { appStateService } from './services/appStateService';
 
-type ViewMode = 'landing' | 'app';
+type ViewMode = 'landing' | 'app' | 'builder';
 
 export default function App() {
   const [viewMode, setViewMode] = useState<ViewMode>('app'); // Default to authenticated app for immediate evaluation, with instant landing switch
   const [activeAppPage, setActiveAppPage] = useState<AppNavPage>('overview');
+
+  // Builder workspace state
+  const [builderAgentId, setBuilderAgentId] = useState<string | null>(null);
 
   // Landing page modal states
   const [isLandingBuilderOpen, setIsLandingBuilderOpen] = useState(false);
@@ -62,7 +66,27 @@ export default function App() {
   // Sync with browser URL hash for deep linking and back/forward navigation
   useEffect(() => {
     const handleHashChange = () => {
-      const hash = window.location.hash.replace('#', '').toLowerCase();
+      const rawHash = window.location.hash.replace('#', '');
+      const hash = rawHash.toLowerCase();
+
+      // Deep linking to builder: /agents/new, /agents/:id/edit, /agents/:id, /builder/new, /builder/:id
+      const cleanPath = rawHash.startsWith('/') ? rawHash.substring(1) : rawHash;
+      if (cleanPath === 'agents/new' || cleanPath === 'builder/new') {
+        setViewMode('builder');
+        setBuilderAgentId('new');
+        return;
+      }
+
+      if (cleanPath.startsWith('agents/') || cleanPath.startsWith('builder/')) {
+        const parts = cleanPath.split('/');
+        const targetId = parts[1];
+        if (targetId && targetId !== 'new') {
+          setViewMode('builder');
+          setBuilderAgentId(targetId);
+          return;
+        }
+      }
+
       if (hash === 'landing' || hash === 'platform' || hash === 'capabilities' || hash === 'how-it-works' || hash === 'pricing') {
         setViewMode('landing');
       } else if (
@@ -90,8 +114,25 @@ export default function App() {
   }, []);
 
   const navigateAppPage = (page: AppNavPage) => {
+    setViewMode('app');
     setActiveAppPage(page);
     window.location.hash = page;
+  };
+
+  const navigateToBuilder = (
+    agentId?: string | null,
+    template?: TemplateDefinition | null,
+    prompt?: string
+  ) => {
+    setViewMode('builder');
+    setBuilderAgentId(agentId || 'new');
+    setTemplateForCreation(template || null);
+    setInitialPromptForCreate(prompt);
+    if (agentId && agentId !== 'new') {
+      window.location.hash = `/agents/${agentId}/edit`;
+    } else {
+      window.location.hash = '/agents/new';
+    }
   };
 
   const switchToLanding = () => {
@@ -120,7 +161,23 @@ export default function App() {
 
   return (
     <ToastProvider>
-      {viewMode === 'app' ? (
+      {viewMode === 'builder' ? (
+        /* =========================================================================
+           ADVANCED AGENT BUILDER WORKSPACE
+        ========================================================================= */
+        <AgentBuilderPage
+          agentId={builderAgentId}
+          initialTemplate={templateForCreation}
+          initialPrompt={initialPromptForCreate}
+          onNavigateBack={() => switchToApp('agents')}
+          onNavigateToIntegrations={() => switchToApp('integrations')}
+          onNavigateToKnowledge={() => switchToApp('knowledge')}
+          onNavigateToSettings={() => switchToApp('settings')}
+          onAgentSaved={(savedAgent) => {
+            setInspectedAgent(savedAgent);
+          }}
+        />
+      ) : viewMode === 'app' ? (
         /* =========================================================================
            AUTHENTICATED APPLICATION INTERFACE
         ========================================================================= */
@@ -128,13 +185,12 @@ export default function App() {
           activePage={activeAppPage}
           onNavigate={navigateAppPage}
           onSwitchToLanding={switchToLanding}
+          onCreateAgentAction={() => navigateToBuilder('new')}
         >
           {activeAppPage === 'overview' && (
             <OverviewPage
               onCreateAgent={(prompt) => {
-                setInitialPromptForCreate(prompt);
-                setTemplateForCreation(null);
-                setIsAppCreateOpen(true);
+                navigateToBuilder('new', null, prompt);
               }}
               onExploreTemplates={() => navigateAppPage('templates')}
               onOpenAgent={(agent) => setInspectedAgent(agent)}
@@ -147,11 +203,8 @@ export default function App() {
 
           {activeAppPage === 'agents' && (
             <MyAgentsPage
-              onCreateAgent={() => {
-                setInitialPromptForCreate(undefined);
-                setTemplateForCreation(null);
-                setIsAppCreateOpen(true);
-              }}
+              onCreateAgent={() => navigateToBuilder('new')}
+              onEditAgentInBuilder={(agent) => navigateToBuilder(agent.id)}
               onOpenAgent={(agent) => setInspectedAgent(agent)}
               onExploreTemplates={() => navigateAppPage('templates')}
             />
@@ -160,19 +213,24 @@ export default function App() {
           {activeAppPage === 'templates' && (
             <TemplatesPage
               onSelectTemplateToCreate={(template) => {
-                setTemplateForCreation(template);
-                setIsAppCreateOpen(true);
+                navigateToBuilder('new', template);
+              }}
+              onCreateCustomAgent={() => {
+                navigateToBuilder('new');
+              }}
+              onNavigateToAgent={(agentId) => {
+                const agent = appStateService.getAgentById(agentId);
+                if (agent) {
+                  setInspectedAgent(agent);
+                }
+                navigateAppPage('agents');
               }}
             />
           )}
 
           {activeAppPage === 'workflows' && (
             <WorkflowsPage
-              onCreateAgent={() => {
-                setInitialPromptForCreate(undefined);
-                setTemplateForCreation(null);
-                setIsAppCreateOpen(true);
-              }}
+              onCreateAgent={() => navigateToBuilder('new')}
             />
           )}
 
@@ -194,6 +252,7 @@ export default function App() {
             onUpdate={() => {
               setInspectedAgent(null);
             }}
+            onOpenBuilder={(agent) => navigateToBuilder(agent.id)}
           />
 
           {/* Inspected Activity Drawer */}
@@ -207,7 +266,7 @@ export default function App() {
             }}
           />
 
-          {/* Application Create Agent Modal */}
+          {/* Application Create Agent Modal (Quick creation fallback) */}
           <CreateAgentModal
             isOpen={isAppCreateOpen}
             onClose={() => {

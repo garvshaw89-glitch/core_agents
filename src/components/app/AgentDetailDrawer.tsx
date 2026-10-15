@@ -22,6 +22,7 @@ import {
   Trash2,
   Save,
   Terminal,
+  Sliders,
 } from 'lucide-react';
 
 interface AgentDetailDrawerProps {
@@ -29,6 +30,8 @@ interface AgentDetailDrawerProps {
   isOpen: boolean;
   onClose: () => void;
   onUpdate: () => void;
+  onViewTemplate?: (templateId: string) => void;
+  onOpenBuilder?: (agent: Agent) => void;
 }
 
 const iconMap: Record<string, React.ElementType> = {
@@ -44,6 +47,8 @@ export const AgentDetailDrawer: React.FC<AgentDetailDrawerProps> = ({
   isOpen,
   onClose,
   onUpdate,
+  onViewTemplate,
+  onOpenBuilder,
 }) => {
   const { showToast } = useToast();
   const [name, setName] = useState('');
@@ -151,6 +156,32 @@ export const AgentDetailDrawer: React.FC<AgentDetailDrawerProps> = ({
           </div>
         </div>
 
+        {/* Source Template Reference Banner */}
+        {agent.sourceTemplateId && (
+          <div className="p-3 mb-5 rounded-xl bg-[#09090D] border border-[#292936] flex items-center justify-between text-xs">
+            <div className="flex items-center gap-2">
+              <BookOpen size={13} className="text-[#A78BFA]" />
+              <span className="text-[#777487]">Source Blueprint:</span>
+              <span className="font-semibold text-[#F4F2FA]">{agent.sourceTemplateName}</span>
+              {agent.sourceTemplateVersion && (
+                <span className="text-[10px] font-mono text-[#777487]">v{agent.sourceTemplateVersion}</span>
+              )}
+            </div>
+            {onViewTemplate && (
+              <button
+                type="button"
+                onClick={() => {
+                  onViewTemplate(agent.sourceTemplateId!);
+                  onClose();
+                }}
+                className="text-[11px] text-[#A78BFA] hover:underline cursor-pointer flex items-center gap-1"
+              >
+                <span>View blueprint</span>
+              </button>
+            )}
+          </div>
+        )}
+
         {/* Form & Specs */}
         <form onSubmit={handleSave} className="space-y-5 text-xs flex-1">
           <Input
@@ -223,13 +254,32 @@ export const AgentDetailDrawer: React.FC<AgentDetailDrawerProps> = ({
             </div>
           )}
 
-          <div className="pt-4 border-t border-[#292936] flex items-center justify-end gap-2">
-            <Button variant="ghost" size="sm" onClick={onClose}>
-              Cancel
-            </Button>
-            <Button variant="primary" size="sm" type="submit" leftIcon={<Save size={13} />} isLoading={isSaving}>
-              Save Changes
-            </Button>
+          <div className="pt-4 border-t border-[#292936] flex items-center justify-between gap-2">
+            <div>
+              {onOpenBuilder && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  type="button"
+                  onClick={() => {
+                    onClose();
+                    onOpenBuilder(agent);
+                  }}
+                  leftIcon={<Sliders size={13} className="text-[#A78BFA]" />}
+                >
+                  Advanced Builder
+                </Button>
+              )}
+            </div>
+
+            <div className="flex items-center gap-2">
+              <Button variant="ghost" size="sm" onClick={onClose}>
+                Cancel
+              </Button>
+              <Button variant="primary" size="sm" type="submit" leftIcon={<Save size={13} />} isLoading={isSaving}>
+                Save Changes
+              </Button>
+            </div>
           </div>
         </form>
       </div>

@@ -47,6 +47,7 @@ interface AppShellProps {
   children: React.ReactNode;
   initialTemplateForCreation?: TemplateDefinition | null;
   onClearInitialTemplate?: () => void;
+  onCreateAgentAction?: () => void;
 }
 
 export const AppShell: React.FC<AppShellProps> = ({
@@ -56,6 +57,7 @@ export const AppShell: React.FC<AppShellProps> = ({
   children,
   initialTemplateForCreation = null,
   onClearInitialTemplate,
+  onCreateAgentAction,
 }) => {
   const { showToast } = useToast();
   const [profile, setProfile] = useState<UserProfile>(appStateService.getUserProfile());
@@ -339,7 +341,7 @@ export const AppShell: React.FC<AppShellProps> = ({
             {/* Primary Action Button */}
             <button
               type="button"
-              onClick={() => handleOpenCreateWithPrompt()}
+              onClick={() => (onCreateAgentAction ? onCreateAgentAction() : handleOpenCreateWithPrompt())}
               className="inline-flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-semibold text-[#09090D] bg-[#F4F2FA] hover:bg-white active:bg-[#E2DEEE] transition-all rounded-xl shadow-xs cursor-pointer"
             >
               <Plus size={14} />

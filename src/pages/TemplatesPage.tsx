@@ -1,149 +1,420 @@
-import React, { useState } from 'react';
-import { PageHeader } from '../design-system/PageHeader';
-import { Tabs } from '../design-system/Tabs';
+import React, { useState, useMemo } from 'react';
+import { STARTER_TEMPLATES, MarketplaceTemplate, SetupComplexity } from '../data/templates';
+import { TemplateCard } from '../components/marketplace/TemplateCard';
+import { FeaturedTemplates } from '../components/marketplace/FeaturedTemplates';
+import { SearchField } from '../design-system/SearchField';
 import { Button } from '../design-system/Button';
-import { STARTER_TEMPLATES, TemplateDefinition } from '../data/templates';
-import { TemplatePreviewModal } from '../components/app/TemplatePreviewModal';
+import { EmptyState } from '../design-system/EmptyState';
+import { appStateService } from '../services/appStateService';
+import { TemplateDetailView } from '../components/marketplace/TemplateDetailView';
 import {
-  Compass,
-  Code2,
-  BookOpen,
-  Server,
-  Activity,
+  Plus,
+  LayoutGrid,
+  List,
   Sparkles,
-  ArrowRight,
-  Layers,
-  Wrench,
-  Eye,
+  SlidersHorizontal,
+  X,
+  Bot,
+  Filter,
 } from 'lucide-react';
 
 interface TemplatesPageProps {
-  onSelectTemplateToCreate: (template: TemplateDefinition) => void;
+  onSelectTemplateToCreate: (template: MarketplaceTemplate) => void;
+  onViewTemplateDetails?: (template: MarketplaceTemplate) => void;
+  onCreateCustomAgent?: () => void;
+  onNavigateToAgent?: (agentId: string) => void;
 }
 
-const iconMap: Record<string, React.ElementType> = {
-  Compass,
-  Code2,
-  BookOpen,
-  Server,
-  Activity,
-  Sparkles,
-};
-
-export const TemplatesPage: React.FC<TemplatesPageProps> = ({ onSelectTemplateToCreate }) => {
+export const TemplatesPage: React.FC<TemplatesPageProps> = ({
+  onSelectTemplateToCreate,
+  onViewTemplateDetails,
+  onCreateCustomAgent,
+  onNavigateToAgent,
+}) => {
+  const [selectedTemplateForDetail, setSelectedTemplateForDetail] = useState<MarketplaceTemplate | null>(null);
+  const [searchQuery, setSearchQuery] = useState('');
   const [activeCategory, setActiveCategory] = useState<string>('all');
-  const [previewTemplate, setPreviewTemplate] = useState<TemplateDefinition | null>(null);
+  const [sortBy, setSortBy] = useState<'recommended' | 'name' | 'category' | 'recent'>('recommended');
+  const [complexityFilter, setComplexityFilter] = useState<string>('all');
+  const [integrationFilter, setIntegrationFilter] = useState<string>('all');
+  const [originFilter, setOriginFilter] = useState<'all' | 'builtin' | 'custom'>('all');
+  const [layout, setLayout] = useState<'grid' | 'list'>('grid');
+  const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
+
+  const userAgents = appStateService.getAgents();
 
   const categories = [
-    { id: 'all', label: 'All Templates' },
+    { id: 'all', label: 'All agents' },
     { id: 'research', label: 'Research' },
-    { id: 'coding', label: 'Coding' },
-    { id: 'learning', label: 'Learning' },
+    { id: 'development', label: 'Development' },
+    { id: 'productivity', label: 'Productivity' },
+    { id: 'education', label: 'Education' },
     { id: 'business', label: 'Business' },
-    { id: 'monitoring', label: 'Monitoring' },
+    { id: 'marketing', label: 'Marketing' },
+    { id: 'operations', label: 'Operations' },
     { id: 'custom', label: 'Custom' },
   ];
 
-  const filteredTemplates = STARTER_TEMPLATES.filter(
-    (t) => activeCategory === 'all' || t.category === activeCategory
-  );
+  // Calculate live counts for each category
+  const categoryCounts = useMemo(() => {
+    const counts: Record<string, number> = { all: STARTER_TEMPLATES.length };
+    STARTER_TEMPLATES.forEach((tpl) => {
+      counts[tpl.category] = (counts[tpl.category] || 0) + 1;
+    });
+    return counts;
+  }, []);
+
+  // Filtered and sorted templates
+  const filteredTemplates = useMemo(() => {
+    const query = searchQuery.trim().toLowerCase();
+
+    return STARTER_TEMPLATES.filter((tpl) => {
+      // Search matching across name, summary, detailed description, category, tags, capabilities, use cases
+      const matchesSearch =
+        !query ||
+        tpl.name.toLowerCase().includes(query) ||
+        tpl.summary.toLowerCase().includes(query) ||
+        tpl.detailedDescription.toLowerCase().includes(query) ||
+        tpl.category.toLowerCase().includes(query) ||
+        tpl.categoryLabel.toLowerCase().includes(query) ||
+        tpl.tags.some((tag) => tag.toLowerCase().includes(query)) ||
+        tpl.capabilities.some(
+          (c) => c.name.toLowerCase().includes(query) || c.description.toLowerCase().includes(query)
+        ) ||
+        tpl.relevantUseCases.some((uc) => uc.toLowerCase().includes(query));
+
+      // Category filter
+      const matchesCategory =
+        activeCategory === 'all' ||
+        tpl.category === activeCategory ||
+        (activeCategory === 'development' && tpl.category === 'coding') ||
+        (activeCategory === 'education' && tpl.category === 'learning');
+
+      // Complexity filter
+      const matchesComplexity = complexityFilter === 'all' || tpl.setupComplexity === complexityFilter;
+
+      // Integration filter
+      const matchesIntegration =
+        integrationFilter === 'all' ||
+        (integrationFilter === 'none' && tpl.requiredIntegrations.length === 0) ||
+        (integrationFilter === 'required' && tpl.requiredIntegrations.length > 0);
+
+      // Origin filter (builtin vs custom)
+      const matchesOrigin =
+        originFilter === 'all' ||
+        (originFilter === 'builtin' && !tpl.isCustom) ||
+        (originFilter === 'custom' && Boolean(tpl.isCustom));
+
+      return matchesSearch && matchesCategory && matchesComplexity && matchesIntegration && matchesOrigin;
+    }).sort((a, b) => {
+      if (sortBy === 'name') return a.name.localeCompare(b.name);
+      if (sortBy === 'category') return a.categoryLabel.localeCompare(b.categoryLabel);
+      if (sortBy === 'recent') return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+      return a.curatedRank - b.curatedRank;
+    });
+  }, [searchQuery, activeCategory, complexityFilter, integrationFilter, originFilter, sortBy]);
+
+  const featuredTemplates = useMemo(() => {
+    return STARTER_TEMPLATES.filter((t) => t.featured);
+  }, []);
+
+  const hasActiveFilters =
+    searchQuery.trim() !== '' ||
+    activeCategory !== 'all' ||
+    complexityFilter !== 'all' ||
+    integrationFilter !== 'all' ||
+    originFilter !== 'all';
+
+  const handleClearFilters = () => {
+    setSearchQuery('');
+    setActiveCategory('all');
+    setComplexityFilter('all');
+    setIntegrationFilter('all');
+    setOriginFilter('all');
+    setSortBy('recommended');
+  };
+
+  const handleViewDetails = (template: MarketplaceTemplate) => {
+    if (onViewTemplateDetails) {
+      onViewTemplateDetails(template);
+    } else {
+      setSelectedTemplateForDetail(template);
+    }
+  };
+
+  const handleCreateCustom = () => {
+    if (onCreateCustomAgent) {
+      onCreateCustomAgent();
+    } else {
+      onSelectTemplateToCreate(null as any);
+    }
+  };
+
+  if (selectedTemplateForDetail) {
+    return (
+      <TemplateDetailView
+        template={selectedTemplateForDetail}
+        onBack={() => setSelectedTemplateForDetail(null)}
+        onUseTemplate={(template) => {
+          setSelectedTemplateForDetail(null);
+          onSelectTemplateToCreate(template);
+        }}
+        onViewMyAgent={onNavigateToAgent}
+      />
+    );
+  }
 
   return (
-    <div className="space-y-6 animate-in fade-in-0 duration-150">
-      <PageHeader
-        title="Templates"
-        description="Discover pre-calibrated specialist agent blueprints with verified boundaries, inputs, and approved tools."
-      />
+    <div className="space-y-8 animate-in fade-in-0 duration-150 text-left">
+      {/* 4.1 Page Header */}
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 pb-2 border-b border-[#292936]/60">
+        <div className="space-y-1">
+          <div className="text-[11px] font-mono tracking-wider uppercase text-[#A78BFA] font-semibold">
+            CORE LIBRARY
+          </div>
+          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-[#F4F2FA]">
+            Find your next AI agent.
+          </h1>
+          <p className="text-xs sm:text-sm text-[#A5A2B4] max-w-2xl leading-relaxed">
+            Discover specialized agents for research, development, learning, operations, and the work only you can define.
+          </p>
+        </div>
 
-      {/* Category Tabs */}
-      <div className="flex items-center justify-between pb-2">
-        <Tabs
-          items={categories}
-          activeId={activeCategory}
-          onChange={setActiveCategory}
+        <Button
+          variant="primary"
+          size="sm"
+          leftIcon={<Plus size={14} />}
+          onClick={handleCreateCustom}
+        >
+          Create custom agent
+        </Button>
+      </div>
+
+      {/* 4.4 Featured Collection (Shown when browsing all or when no search is active) */}
+      {!hasActiveFilters && (
+        <FeaturedTemplates
+          featuredTemplates={featuredTemplates}
+          userAgents={userAgents}
+          onViewDetails={handleViewDetails}
+          onUseTemplate={onSelectTemplateToCreate}
         />
-      </div>
+      )}
 
-      {/* Template Cards Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-        {filteredTemplates.map((template) => {
-          const IconComponent = iconMap[template.iconName] || Sparkles;
+      {/* Discovery Controls Bar */}
+      <div className="space-y-4">
+        {/* 4.2 Search & Additional Filter Trigger */}
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+          <div className="flex-1">
+            <SearchField
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              onClear={() => setSearchQuery('')}
+              placeholder="Search agents, capabilities, or use cases..."
+              shortcut="/"
+            />
+          </div>
 
-          return (
-            <div
-              key={template.id}
-              onClick={() => setPreviewTemplate(template)}
-              className="flex flex-col justify-between p-6 rounded-2xl bg-[#111118] border border-[#292936] hover:border-[#3D3D4E] hover:bg-[#14141E] transition-all duration-150 cursor-pointer group text-left"
+          <div className="flex items-center gap-2">
+            <Button
+              variant={showAdvancedFilters ? 'secondary' : 'outline'}
+              size="sm"
+              leftIcon={<SlidersHorizontal size={13} />}
+              onClick={() => setShowAdvancedFilters(!showAdvancedFilters)}
             >
-              <div>
-                <div className="flex items-center justify-between mb-4">
-                  <div className="w-10 h-10 rounded-xl bg-[#171720] border border-[#292936] text-[#A78BFA] flex items-center justify-center group-hover:scale-105 transition-transform">
-                    <IconComponent size={20} />
-                  </div>
-                  <span className="text-[10px] font-mono uppercase bg-[#171720] text-[#777487] px-2 py-0.5 rounded border border-[#292936]">
-                    {template.category}
-                  </span>
-                </div>
+              <span>Filters</span>
+              {(complexityFilter !== 'all' || integrationFilter !== 'all' || originFilter !== 'all') && (
+                <span className="w-1.5 h-1.5 rounded-full bg-[#A78BFA]" />
+              )}
+            </Button>
 
-                <h3 className="text-base font-semibold text-[#F4F2FA] mb-2 group-hover:text-white transition-colors">
-                  {template.name}
-                </h3>
-                <p className="text-xs text-[#A5A2B4] leading-relaxed line-clamp-3 mb-6">
-                  {template.summary}
-                </p>
-              </div>
+            {/* 4.5 Sort Selector */}
+            <select
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value as any)}
+              className="bg-[#111118] text-[#F4F2FA] text-xs rounded-xl border border-[#292936] px-3 py-2.5 focus:outline-none focus:border-[#A78BFA] cursor-pointer"
+            >
+              <option value="recommended">Curated Rank</option>
+              <option value="name">Name: A–Z</option>
+              <option value="category">Category</option>
+              <option value="recent">Recently Added</option>
+            </select>
 
-              <div>
-                <div className="pt-3 border-t border-[#292936]/80 flex items-center justify-between text-xs text-[#777487] mb-4">
-                  <div className="flex items-center gap-1">
-                    <Wrench size={12} className="text-[#A78BFA]" />
-                    <span>{template.defaultTools.length} tools included</span>
-                  </div>
-                  <span className="text-[11px] font-mono">{template.suggestedSchedule}</span>
-                </div>
-
-                <div className="flex items-center gap-2">
-                  <Button
-                    variant="secondary"
-                    size="xs"
-                    leftIcon={<Eye size={12} />}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setPreviewTemplate(template);
-                    }}
-                    className="flex-1"
-                  >
-                    Preview blueprint
-                  </Button>
-                  <Button
-                    variant="primary"
-                    size="xs"
-                    rightIcon={<ArrowRight size={12} />}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onSelectTemplateToCreate(template);
-                    }}
-                    className="flex-1"
-                  >
-                    Use template
-                  </Button>
-                </div>
-              </div>
+            {/* View Mode Toggle */}
+            <div className="hidden sm:flex items-center p-1 bg-[#111118] border border-[#292936] rounded-xl">
+              <button
+                type="button"
+                onClick={() => setLayout('grid')}
+                className={`p-1.5 rounded-lg transition-colors cursor-pointer ${
+                  layout === 'grid' ? 'bg-[#171720] text-[#F4F2FA] shadow-xs' : 'text-[#777487] hover:text-[#A5A2B4]'
+                }`}
+                aria-label="Grid view"
+              >
+                <LayoutGrid size={15} />
+              </button>
+              <button
+                type="button"
+                onClick={() => setLayout('list')}
+                className={`p-1.5 rounded-lg transition-colors cursor-pointer ${
+                  layout === 'list' ? 'bg-[#171720] text-[#F4F2FA] shadow-xs' : 'text-[#777487] hover:text-[#A5A2B4]'
+                }`}
+                aria-label="List view"
+              >
+                <List size={15} />
+              </button>
             </div>
-          );
-        })}
+          </div>
+        </div>
+
+        {/* 4.3 Category Navigation Strip */}
+        <div className="flex items-center gap-1.5 overflow-x-auto pb-2 no-scrollbar">
+          {categories.map((cat) => {
+            const isActive = activeCategory === cat.id;
+            const count = categoryCounts[cat.id] || 0;
+
+            return (
+              <button
+                key={cat.id}
+                type="button"
+                onClick={() => setActiveCategory(cat.id)}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium whitespace-nowrap transition-colors cursor-pointer ${
+                  isActive
+                    ? 'bg-[#A78BFA]/15 text-[#C4B5FD] font-semibold border border-[#A78BFA]/30'
+                    : 'bg-[#111118] text-[#A5A2B4] hover:text-[#F4F2FA] border border-[#292936] hover:border-[#3D3D4E]'
+                }`}
+              >
+                <span>{cat.label}</span>
+                <span
+                  className={`text-[10px] font-mono px-1.5 py-0.2 rounded ${
+                    isActive ? 'bg-[#A78BFA]/20 text-[#C4B5FD]' : 'bg-[#171720] text-[#777487]'
+                  }`}
+                >
+                  {count}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+
+        {/* 4.6 Collapsible Advanced Filter Drawer */}
+        {showAdvancedFilters && (
+          <div className="p-4 rounded-2xl bg-[#111118] border border-[#292936] grid grid-cols-1 sm:grid-cols-3 gap-3 animate-in fade-in-0 duration-100">
+            <div>
+              <label className="block text-[11px] font-medium text-[#777487] mb-1">
+                Setup Complexity
+              </label>
+              <select
+                value={complexityFilter}
+                onChange={(e) => setComplexityFilter(e.target.value)}
+                className="w-full bg-[#09090D] text-[#F4F2FA] text-xs rounded-xl border border-[#292936] p-2 focus:outline-none focus:border-[#A78BFA]"
+              >
+                <option value="all">All Complexities</option>
+                <option value="Minimal">Minimal (&lt;1 min)</option>
+                <option value="Standard">Standard</option>
+                <option value="Advanced">Advanced Setup</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-[11px] font-medium text-[#777487] mb-1">
+                Integration Requirements
+              </label>
+              <select
+                value={integrationFilter}
+                onChange={(e) => setIntegrationFilter(e.target.value)}
+                className="w-full bg-[#09090D] text-[#F4F2FA] text-xs rounded-xl border border-[#292936] p-2 focus:outline-none focus:border-[#A78BFA]"
+              >
+                <option value="all">All Integration Types</option>
+                <option value="none">Zero External OAuth Required</option>
+                <option value="required">External Integration Required</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-[11px] font-medium text-[#777487] mb-1">
+                Template Origin
+              </label>
+              <select
+                value={originFilter}
+                onChange={(e) => setOriginFilter(e.target.value as any)}
+                className="w-full bg-[#09090D] text-[#F4F2FA] text-xs rounded-xl border border-[#292936] p-2 focus:outline-none focus:border-[#A78BFA]"
+              >
+                <option value="all">All Blueprints</option>
+                <option value="builtin">Curated Built-in</option>
+                <option value="custom">Custom Scratch Templates</option>
+              </select>
+            </div>
+          </div>
+        )}
+
+        {/* 4.7 Results Header Bar */}
+        <div className="flex items-center justify-between text-xs text-[#777487] pt-1">
+          <div className="flex items-center gap-2">
+            <span className="font-semibold text-[#F4F2FA]">
+              {filteredTemplates.length} {filteredTemplates.length === 1 ? 'agent blueprint' : 'agent blueprints'}
+            </span>
+            {hasActiveFilters && (
+              <>
+                <span>·</span>
+                <button
+                  type="button"
+                  onClick={handleClearFilters}
+                  className="text-[#A78BFA] hover:underline flex items-center gap-1 cursor-pointer"
+                >
+                  <X size={12} />
+                  <span>Clear active filters</span>
+                </button>
+              </>
+            )}
+          </div>
+
+          <div className="hidden sm:block text-[11px] font-mono">
+            Category: {activeCategory === 'all' ? 'All' : activeCategory}
+          </div>
+        </div>
       </div>
 
-      {/* Blueprint Preview Modal */}
-      <TemplatePreviewModal
-        template={previewTemplate}
-        isOpen={previewTemplate !== null}
-        onClose={() => setPreviewTemplate(null)}
-        onUseTemplate={(tpl) => {
-          setPreviewTemplate(null);
-          onSelectTemplateToCreate(tpl);
-        }}
-      />
+      {/* 4.8 Template Grid / List or Empty Search Results State */}
+      {filteredTemplates.length === 0 ? (
+        <EmptyState
+          icon={<Bot size={24} />}
+          title="No agents match your search."
+          description={`We couldn't find any specialist agent templates matching "${searchQuery}" with the selected filters.`}
+          primaryAction={{
+            label: 'Create custom agent',
+            onClick: handleCreateCustom,
+            icon: <Plus size={14} />,
+          }}
+          secondaryAction={{
+            label: 'Reset all filters',
+            onClick: handleClearFilters,
+          }}
+        />
+      ) : (
+        <div
+          className={
+            layout === 'grid'
+              ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5'
+              : 'space-y-3'
+          }
+        >
+          {filteredTemplates.map((template) => {
+            const addedAgents = userAgents.filter((a) => a.sourceTemplateId === template.id);
+            const isAdded = addedAgents.length > 0;
+
+            return (
+              <TemplateCard
+                key={template.id}
+                template={template}
+                layout={layout}
+                isAlreadyAdded={isAdded}
+                addedCount={addedAgents.length}
+                onViewDetails={handleViewDetails}
+                onUseTemplate={onSelectTemplateToCreate}
+              />
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 };

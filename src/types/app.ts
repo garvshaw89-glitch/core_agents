@@ -1,5 +1,54 @@
 export type AgentStatus = 'draft' | 'active' | 'paused' | 'needs_attention';
-export type AgentCategory = 'research' | 'coding' | 'learning' | 'business' | 'operations' | 'monitoring' | 'custom';
+export type AgentCategory =
+  | 'research'
+  | 'development'
+  | 'coding'
+  | 'productivity'
+  | 'education'
+  | 'learning'
+  | 'business'
+  | 'marketing'
+  | 'operations'
+  | 'monitoring'
+  | 'custom';
+
+export interface AgentStructuredInstructions {
+  role?: string;
+  primaryObjective?: string;
+  context?: string;
+  operatingProcedure?: string;
+  constraints?: string;
+  expectedOutput?: string;
+}
+
+export interface AgentModelConfig {
+  provider: string;
+  modelId: string;
+  temperature: number;
+  maxOutputTokens: number;
+  responseFormat: 'text' | 'json' | 'markdown';
+  topP?: number;
+}
+
+export interface AgentPermissionsPolicy {
+  operatingMode: 'manual' | 'approval_required' | 'automated';
+  readOnly: boolean;
+  networkAccess: 'restricted' | 'whitelisted' | 'unrestricted';
+  allowExternalDispatch: boolean;
+  requireApprovalForConsequential: boolean;
+  maxExecutionTimeoutSecs: number;
+  maxToolCallsPerRun: number;
+}
+
+export type ValidationSeverity = 'error' | 'warning' | 'info';
+
+export interface AgentValidationIssue {
+  id: string;
+  section: 'overview' | 'instructions' | 'model' | 'tools' | 'knowledge' | 'permissions' | 'testing';
+  severity: ValidationSeverity;
+  message: string;
+  field?: string;
+}
 
 export interface Agent {
   id: string;
@@ -17,6 +66,17 @@ export interface Agent {
   instructions: string;
   humanApprovalRequired: boolean;
   assignedWorkflowsCount?: number;
+  sourceTemplateId?: string;
+  sourceTemplateName?: string;
+  sourceTemplateVersion?: string;
+  selectedKnowledgeIds?: string[];
+  operatingMode?: 'manual' | 'approval_required' | 'automated';
+  intendedPurpose?: string;
+  tags?: string[];
+  structuredInstructions?: AgentStructuredInstructions;
+  modelConfig?: AgentModelConfig;
+  permissionsPolicy?: AgentPermissionsPolicy;
+  version?: string;
 }
 
 export type WorkflowStatus = 'draft' | 'active' | 'paused' | 'failed';

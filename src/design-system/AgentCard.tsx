@@ -18,14 +18,17 @@ import {
   Wrench,
   Clock,
   Sparkles,
+  Sliders,
 } from 'lucide-react';
 
 export interface AgentCardProps {
   agent: Agent;
   onOpen: (agent: Agent) => void;
+  onEditInBuilder?: (agent: Agent) => void;
   onTogglePause: (agent: Agent) => void;
   onDuplicate: (agent: Agent) => void;
   onArchive: (agent: Agent) => void;
+  onViewTemplate?: (templateId: string) => void;
   layout?: 'grid' | 'list';
 }
 
@@ -40,9 +43,11 @@ const iconMap: Record<string, React.ElementType> = {
 export const AgentCard: React.FC<AgentCardProps> = ({
   agent,
   onOpen,
+  onEditInBuilder,
   onTogglePause,
   onDuplicate,
   onArchive,
+  onViewTemplate,
   layout = 'grid',
 }) => {
   const IconComponent = iconMap[agent.iconName] || Compass;
@@ -50,9 +55,15 @@ export const AgentCard: React.FC<AgentCardProps> = ({
   const menuItems = [
     {
       id: 'open',
-      label: 'Open Details',
+      label: 'Quick Inspector',
       icon: <ExternalLink size={13} />,
       onClick: () => onOpen(agent),
+    },
+    {
+      id: 'edit_builder',
+      label: 'Open in Builder',
+      icon: <Sliders size={13} />,
+      onClick: () => (onEditInBuilder ? onEditInBuilder(agent) : onOpen(agent)),
     },
     {
       id: 'toggle',
@@ -66,6 +77,16 @@ export const AgentCard: React.FC<AgentCardProps> = ({
       icon: <Copy size={13} />,
       onClick: () => onDuplicate(agent),
     },
+    ...(agent.sourceTemplateId && onViewTemplate
+      ? [
+          {
+            id: 'view_template',
+            label: 'View Source Blueprint',
+            icon: <BookOpen size={13} />,
+            onClick: () => onViewTemplate(agent.sourceTemplateId!),
+          },
+        ]
+      : []),
     'divider' as const,
     {
       id: 'archive',
@@ -158,9 +179,15 @@ export const AgentCard: React.FC<AgentCardProps> = ({
         </div>
 
         {/* Title and description */}
-        <h3 className="text-sm font-semibold text-[#F4F2FA] mb-1.5 group-hover:text-white transition-colors">
+        <h3 className="text-sm font-semibold text-[#F4F2FA] mb-1 group-hover:text-white transition-colors">
           {agent.name}
         </h3>
+        {agent.sourceTemplateName && (
+          <div className="text-[10px] text-[#A78BFA] font-mono mb-2 flex items-center gap-1">
+            <BookOpen size={10} />
+            <span>Blueprint: {agent.sourceTemplateName}</span>
+          </div>
+        )}
         <p className="text-xs text-[#A5A2B4] leading-relaxed line-clamp-2 mb-4">
           {agent.description}
         </p>

@@ -14,13 +14,17 @@ import { Plus, LayoutGrid, List, Bot, Filter, Sparkles } from 'lucide-react';
 interface MyAgentsPageProps {
   onCreateAgent: () => void;
   onOpenAgent: (agent: Agent) => void;
+  onEditAgentInBuilder?: (agent: Agent) => void;
   onExploreTemplates: () => void;
+  onViewTemplate?: (templateId: string) => void;
 }
 
 export const MyAgentsPage: React.FC<MyAgentsPageProps> = ({
   onCreateAgent,
   onOpenAgent,
+  onEditAgentInBuilder,
   onExploreTemplates,
+  onViewTemplate,
 }) => {
   const { showToast } = useToast();
   const [agents, setAgents] = useState<Agent[]>([]);
@@ -240,9 +244,11 @@ export const MyAgentsPage: React.FC<MyAgentsPageProps> = ({
               agent={agent}
               layout={layout}
               onOpen={onOpenAgent}
+              onEditInBuilder={onEditAgentInBuilder}
               onTogglePause={handleTogglePause}
               onDuplicate={handleDuplicate}
               onArchive={(a) => setAgentToArchive(a)}
+              onViewTemplate={onViewTemplate}
             />
           ))}
         </div>
