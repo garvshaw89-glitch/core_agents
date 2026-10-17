@@ -27,6 +27,7 @@ import {
   PanelRightClose,
   PanelRightOpen,
   Edit2,
+  History,
 } from 'lucide-react';
 
 interface AgentBuilderShellProps {
@@ -44,8 +45,10 @@ interface AgentBuilderShellProps {
   readinessLabel: string;
   isValidationOpen: boolean;
   onToggleValidation: () => void;
+  onToggleVersionHistory?: () => void;
   children: React.ReactNode;
   validationPanelNode: React.ReactNode;
+  versionHistoryPanelNode?: React.ReactNode;
 }
 
 const iconMap: Record<string, React.ElementType> = {
@@ -76,8 +79,10 @@ export const AgentBuilderShell: React.FC<AgentBuilderShellProps> = ({
   readinessLabel,
   isValidationOpen,
   onToggleValidation,
+  onToggleVersionHistory,
   children,
   validationPanelNode,
+  versionHistoryPanelNode,
 }) => {
   const [isEditingTitle, setIsEditingTitle] = useState(false);
   const [tempTitle, setTempTitle] = useState(agent.name);
@@ -209,6 +214,19 @@ export const AgentBuilderShell: React.FC<AgentBuilderShellProps> = ({
             </span>
           </button>
 
+          {/* Version History Trigger */}
+          {onToggleVersionHistory && (
+            <button
+              type="button"
+              onClick={onToggleVersionHistory}
+              className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border border-[#292936] bg-[#171720] hover:bg-[#20202E] hover:border-[#A78BFA]/50 text-xs font-mono text-[#A5A2B4] hover:text-[#F4F2FA] transition-colors cursor-pointer"
+              title="View Version History & Snapshots"
+            >
+              <History size={13} className="text-[#A78BFA]" />
+              <span className="hidden md:inline">History</span>
+            </button>
+          )}
+
           {/* Quick Test Tab Switcher */}
           <Button
             variant={activeSection === 'testing' ? 'primary' : 'outline'}
@@ -319,6 +337,19 @@ export const AgentBuilderShell: React.FC<AgentBuilderShellProps> = ({
                 {agent.humanApprovalRequired !== false ? 'Enforced' : 'Disabled'}
               </span>
             </div>
+
+            {onToggleVersionHistory && (
+              <button
+                type="button"
+                onClick={onToggleVersionHistory}
+                className="w-full mt-2 flex items-center justify-between font-mono text-[#A78BFA] hover:text-[#C4B5FD] bg-[#111118] hover:bg-[#171720] px-2.5 py-1.5 rounded-lg border border-[#292936] hover:border-[#A78BFA]/40 transition-colors cursor-pointer text-[11px]"
+              >
+                <span className="flex items-center gap-1.5">
+                  <History size={12} /> Version History
+                </span>
+                <span className="text-[10px] text-[#A5A2B4]">Timeline →</span>
+              </button>
+            )}
           </div>
         </nav>
 
@@ -349,6 +380,9 @@ export const AgentBuilderShell: React.FC<AgentBuilderShellProps> = ({
           </>
         )}
       </div>
+
+      {/* Version History Slide-Over Drawer */}
+      {versionHistoryPanelNode}
     </div>
   );
 };

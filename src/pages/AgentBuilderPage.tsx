@@ -17,6 +17,7 @@ import { BuilderKnowledgeSection } from '../components/builder/BuilderKnowledgeS
 import { BuilderPermissionsSection } from '../components/builder/BuilderPermissionsSection';
 import { BuilderTestingSection } from '../components/builder/BuilderTestingSection';
 import { BuilderValidationPanel, BuilderSectionKey } from '../components/builder/BuilderValidationPanel';
+import { AgentVersionHistoryPanel } from '../components/builder/AgentVersionHistoryPanel';
 import { Bot, ArrowLeft } from 'lucide-react';
 
 interface AgentBuilderPageProps {
@@ -45,6 +46,7 @@ export const AgentBuilderPage: React.FC<AgentBuilderPageProps> = ({
   const { showToast } = useToast();
   const [activeSection, setActiveSection] = useState<BuilderSectionKey>(initialSection || 'overview');
   const [isValidationOpen, setIsValidationOpen] = useState(true);
+  const [isVersionHistoryOpen, setIsVersionHistoryOpen] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [saveStatus, setSaveStatus] = useState<'unsaved' | 'saving' | 'saved' | 'error'>('saved');
   const [lastSavedAt, setLastSavedAt] = useState<string | undefined>(undefined);
@@ -305,6 +307,7 @@ export const AgentBuilderPage: React.FC<AgentBuilderPageProps> = ({
         readinessLabel={validationResult.readinessLabel}
         isValidationOpen={isValidationOpen}
         onToggleValidation={() => setIsValidationOpen(!isValidationOpen)}
+        onToggleVersionHistory={() => setIsVersionHistoryOpen(!isVersionHistoryOpen)}
         validationPanelNode={
           <BuilderValidationPanel
             issues={validationResult.issues}
@@ -318,6 +321,24 @@ export const AgentBuilderPage: React.FC<AgentBuilderPageProps> = ({
             }}
             onClose={() => setIsValidationOpen(false)}
             isCollapsible={true}
+          />
+        }
+        versionHistoryPanelNode={
+          <AgentVersionHistoryPanel
+            isOpen={isVersionHistoryOpen}
+            onClose={() => setIsVersionHistoryOpen(false)}
+            agent={agent}
+            onRevertSuccess={(revertedAgent) => {
+              setAgent(revertedAgent);
+              setInitialSnapshot(JSON.stringify(revertedAgent));
+              setLastSavedAt(revertedAgent.updatedAt);
+              setSaveStatus('saved');
+              showToast({
+                type: 'success',
+                title: 'Agent Reverted',
+                message: `Configuration restored to snapshot. All sections have been synchronized.`,
+              });
+            }}
           />
         }
       >

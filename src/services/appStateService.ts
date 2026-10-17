@@ -1,7 +1,43 @@
-import { Agent, Workflow, ActivityRecord, KnowledgeItem, Integration, UserProfile } from '../types/app';
+import { Agent, AgentVersion, Workflow, ActivityRecord, KnowledgeItem, Integration, UserProfile } from '../types/app';
 import { INITIAL_AGENTS, INITIAL_WORKFLOWS, INITIAL_ACTIVITIES, INITIAL_KNOWLEDGE, INITIAL_INTEGRATIONS } from './initialData';
 
 const STORAGE_KEY_PREFIX = 'core_agents_';
+
+function computeAgentDiff(prev: Agent, next: Agent): string[] {
+  const diffs: string[] = [];
+  if (prev.name !== next.name) diffs.push(`Renamed from "${prev.name}" to "${next.name}"`);
+  if (prev.description !== next.description) diffs.push('Updated description');
+  if (prev.status !== next.status) diffs.push(`Status changed to ${next.status}`);
+  if (prev.instructions !== next.instructions) {
+    const prevLen = prev.instructions?.length || 0;
+    const nextLen = next.instructions?.length || 0;
+    diffs.push(`Instructions revised (${prevLen} → ${nextLen} chars)`);
+  }
+  if (prev.modelConfig?.modelId !== next.modelConfig?.modelId && next.modelConfig?.modelId) {
+    diffs.push(`Model switched to ${next.modelConfig.modelId}`);
+  }
+  if (prev.modelConfig?.temperature !== next.modelConfig?.temperature && next.modelConfig?.temperature !== undefined) {
+    diffs.push(`Temperature set to ${next.modelConfig.temperature}`);
+  }
+  const prevTools = new Set(prev.tools || []);
+  const nextTools = new Set(next.tools || []);
+  const addedTools = [...nextTools].filter((t) => !prevTools.has(t));
+  const removedTools = [...prevTools].filter((t) => !nextTools.has(t));
+  if (addedTools.length > 0) diffs.push(`Added ${addedTools.length} tool(s): ${addedTools.slice(0, 2).join(', ')}${addedTools.length > 2 ? '...' : ''}`);
+  if (removedTools.length > 0) diffs.push(`Removed ${removedTools.length} tool(s)`);
+
+  const prevK = prev.selectedKnowledgeIds || [];
+  const nextK = next.selectedKnowledgeIds || [];
+  if (prevK.length !== nextK.length || !prevK.every((k) => nextK.includes(k))) {
+    diffs.push(`Knowledge attachments modified (${nextK.length} source(s))`);
+  }
+
+  if (prev.humanApprovalRequired !== next.humanApprovalRequired) {
+    diffs.push(next.humanApprovalRequired ? 'Enabled human review gate' : 'Switched to autonomous execution');
+  }
+
+  return diffs.length > 0 ? diffs : ['Configuration saved'];
+}
 
 class AppStateService {
   private isZeroStateMode = false;
@@ -43,17 +79,132 @@ class AppStateService {
     return this.getAgents().find((a) => a.id === id);
   }
 
-  saveAgent(agent: Agent): void {
+  saveAgent(agent: Agent, createVersionRecord = true, versionLabel?: string): void {
     const current = this.getAgents();
     const index = current.findIndex((a) => a.id === agent.id);
+    const existingAgent = index >= 0 ? current[index] : null;
     let updated: Agent[];
+    const now = new Date().toISOString();
+    const updatedAgent: Agent = { ...agent, updatedAt: now };
+
     if (index >= 0) {
       updated = [...current];
-      updated[index] = { ...agent, updatedAt: new Date().toISOString() };
+      updated[index] = updatedAgent;
     } else {
-      updated = [agent, ...current];
+      updated = [updatedAgent, ...current];
     }
     this.setItem('agents', updated);
+
+    // Automatically manage version snapshot
+    if (createVersionRecord) {
+      this.recordAgentVersion(updatedAgent, existingAgent, versionLabel);
+    }
+  }
+
+  // --- Agent Version History ---
+  getAgentVersions(agentId: string): AgentVersion[] {
+    const versions = this.getItem<AgentVersion[]>(`versions_${agentId}`, []);
+    if (versions.length > 0) {
+      return versions;
+    }
+
+    // Seed baseline version if none exists yet for an existing agent
+    const agent = this.getAgentById(agentId);
+    if (!agent) return [];
+
+    const baselineVersion: AgentVersion = {
+      id: `ver-${agentId}-1`,
+      agentId: agent.id,
+      versionNumber: 1,
+      timestamp: agent.createdAt || new Date(Date.now() - 3600000 * 48).toISOString(),
+      label: agent.sourceTemplateName ? `Imported from ${agent.sourceTemplateName}` : 'Initial Agent Creation',
+      author: 'Alex Mercer (Lead)',
+      changesSummary: [
+        'Initial agent specification',
+        `${agent.tools.length} default tools connected`,
+        agent.humanApprovalRequired ? 'Human approval gate configured' : 'Autonomous execution configured',
+      ],
+      snapshot: { ...agent },
+    };
+
+    const initialList = [baselineVersion];
+    this.setItem(`versions_${agentId}`, initialList);
+    return initialList;
+  }
+
+  recordAgentVersion(agent: Agent, previousAgent?: Agent | null, label?: string): AgentVersion {
+    const existingVersions = this.getAgentVersions(agent.id);
+    const nextNumber = existingVersions.length > 0 
+      ? Math.max(...existingVersions.map((v) => v.versionNumber)) + 1 
+      : 1;
+
+    const changes = previousAgent 
+      ? computeAgentDiff(previousAgent, agent)
+      : ['Initial agent creation'];
+
+    const newVersion: AgentVersion = {
+      id: `ver-${agent.id}-${Date.now()}`,
+      agentId: agent.id,
+      versionNumber: nextNumber,
+      timestamp: new Date().toISOString(),
+      label: label || `Version ${nextNumber} Save`,
+      author: 'Alex Mercer (Lead)',
+      changesSummary: changes,
+      snapshot: JSON.parse(JSON.stringify(agent)),
+    };
+
+    // Keep most recent versions first
+    const updatedVersions = [newVersion, ...existingVersions];
+    this.setItem(`versions_${agent.id}`, updatedVersions);
+    return newVersion;
+  }
+
+  revertAgentToVersion(agentId: string, versionId: string): Agent | null {
+    const versions = this.getAgentVersions(agentId);
+    const targetVersion = versions.find((v) => v.id === versionId);
+    if (!targetVersion) return null;
+
+    const currentAgent = this.getAgentById(agentId);
+    const now = new Date().toISOString();
+
+    // Create a new updated agent state restored from snapshot
+    const restoredAgent: Agent = {
+      ...JSON.parse(JSON.stringify(targetVersion.snapshot)),
+      id: agentId,
+      updatedAt: now,
+    };
+
+    // Save with a dedicated "Reverted to vX" version log
+    const nextNumber = versions.length > 0 
+      ? Math.max(...versions.map((v) => v.versionNumber)) + 1 
+      : 1;
+
+    const revertLogVersion: AgentVersion = {
+      id: `ver-${agentId}-${Date.now()}`,
+      agentId: agentId,
+      versionNumber: nextNumber,
+      timestamp: now,
+      label: `Reverted to v${targetVersion.versionNumber}`,
+      author: 'Alex Mercer (Lead)',
+      changesSummary: [
+        `Restored snapshot from v${targetVersion.versionNumber} (${targetVersion.label || 'Saved checkpoint'})`,
+        ...(currentAgent ? computeAgentDiff(currentAgent, restoredAgent) : []),
+      ],
+      snapshot: JSON.parse(JSON.stringify(restoredAgent)),
+    };
+
+    // Update agent storage
+    const currentAgents = this.getAgents();
+    const index = currentAgents.findIndex((a) => a.id === agentId);
+    if (index >= 0) {
+      currentAgents[index] = restoredAgent;
+      this.setItem('agents', currentAgents);
+    }
+
+    // Save versions with the new restore event
+    this.setItem(`versions_${agentId}`, [revertLogVersion, ...versions]);
+
+    return restoredAgent;
   }
 
   deleteAgent(id: string): void {

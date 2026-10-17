@@ -79,6 +79,17 @@ export interface Agent {
   version?: string;
 }
 
+export interface AgentVersion {
+  id: string;
+  agentId: string;
+  versionNumber: number;
+  timestamp: string;
+  label?: string;
+  author?: string;
+  changesSummary?: string[];
+  snapshot: Agent;
+}
+
 export type WorkflowStatus = 'draft' | 'active' | 'paused' | 'failed';
 
 export interface Workflow {
