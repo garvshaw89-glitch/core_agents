@@ -194,7 +194,7 @@ export const AgentBuilderShell: React.FC<AgentBuilderShellProps> = ({
           <button
             type="button"
             onClick={onToggleValidation}
-            className={`hidden sm:flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border text-xs font-mono transition-colors cursor-pointer ${
+            className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border text-xs font-mono transition-colors cursor-pointer ${
               errorsCount > 0
                 ? 'bg-[#F07885]/10 border-[#F07885]/30 text-[#F07885] hover:bg-[#F07885]/20'
                 : warningsCount > 0
@@ -203,9 +203,9 @@ export const AgentBuilderShell: React.FC<AgentBuilderShellProps> = ({
             }`}
             title="Toggle Audit & Validation Panel"
           >
-            <span>Audit:</span>
-            <span className="font-bold">
-              {errorsCount > 0 ? `${errorsCount} Error${errorsCount > 1 ? 's' : ''}` : readinessLabel}
+            <span className="hidden sm:inline">Audit:</span>
+            <span className="font-bold truncate max-w-[110px] sm:max-w-none">
+              {errorsCount > 0 ? `${errorsCount} Err` : readinessLabel}
             </span>
           </button>
 
@@ -329,9 +329,24 @@ export const AgentBuilderShell: React.FC<AgentBuilderShellProps> = ({
 
         {/* Right: Collapsible Validation Summary Panel (~320px on desktop) */}
         {isValidationOpen && (
-          <aside className="hidden xl:block w-80 shrink-0 border-l border-[#292936] p-4 bg-[#0D0D13]/50 sticky top-[57px] h-[calc(100vh-57px)] overflow-y-auto">
-            {validationPanelNode}
-          </aside>
+          <>
+            {/* Desktop fixed sidebar */}
+            <aside className="hidden xl:block w-80 shrink-0 border-l border-[#292936] p-4 bg-[#0D0D13]/50 sticky top-[57px] h-[calc(100vh-57px)] overflow-y-auto">
+              {validationPanelNode}
+            </aside>
+
+            {/* Mobile / Tablet slide-over modal drawer */}
+            <div className="xl:hidden fixed inset-0 z-50 flex justify-end bg-black/60 backdrop-blur-xs animate-in fade-in-0 duration-150">
+              <div
+                className="w-full max-w-sm h-full bg-[#0D0D13] border-l border-[#292936] p-4 overflow-y-auto animate-in slide-in-from-right duration-200 shadow-2xl"
+                role="dialog"
+                aria-modal="true"
+                aria-label="Agent Configuration Audit"
+              >
+                {validationPanelNode}
+              </div>
+            </div>
+          </>
         )}
       </div>
     </div>

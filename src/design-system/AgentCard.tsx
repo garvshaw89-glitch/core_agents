@@ -130,7 +130,18 @@ export const AgentCard: React.FC<AgentCardProps> = ({
             </span>
           </div>
 
-          <div onClick={(e) => e.stopPropagation()}>
+          <div className="flex items-center gap-1.5" onClick={(e) => e.stopPropagation()}>
+            {onEditInBuilder && (
+              <button
+                type="button"
+                onClick={() => onEditInBuilder(agent)}
+                className="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-[#171720] border border-[#292936] text-[11px] font-medium text-[#A5A2B4] hover:text-[#F4F2FA] hover:border-[#A78BFA]/50 transition-colors cursor-pointer"
+                title="Open in Builder"
+              >
+                <Sliders size={12} className="text-[#A78BFA]" />
+                <span>Configure</span>
+              </button>
+            )}
             <DropdownMenu
               align="right"
               trigger={
@@ -162,6 +173,17 @@ export const AgentCard: React.FC<AgentCardProps> = ({
           </div>
 
           <div className="flex items-center gap-1.5" onClick={(e) => e.stopPropagation()}>
+            {onEditInBuilder && (
+              <button
+                type="button"
+                onClick={() => onEditInBuilder(agent)}
+                className="opacity-0 group-hover:opacity-100 focus:opacity-100 flex items-center gap-1 px-2 py-1 rounded-lg bg-[#171720] border border-[#292936] text-[11px] text-[#A5A2B4] hover:text-[#F4F2FA] hover:border-[#A78BFA]/50 transition-all cursor-pointer"
+                title="Configure Agent in Builder"
+              >
+                <Sliders size={11} className="text-[#A78BFA]" />
+                <span className="hidden xl:inline">Configure</span>
+              </button>
+            )}
             <StatusBadge status={agent.status} size="sm" />
             <DropdownMenu
               align="right"

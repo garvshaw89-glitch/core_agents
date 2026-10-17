@@ -39,6 +39,7 @@ import { AgentBuilderPage } from './pages/AgentBuilderPage';
 import { TemplateDefinition } from './data/templates';
 import { Agent, ActivityRecord } from './types/app';
 import { appStateService } from './services/appStateService';
+import { BuilderSectionKey } from './components/builder/BuilderValidationPanel';
 
 type ViewMode = 'landing' | 'app' | 'builder';
 
@@ -48,6 +49,7 @@ export default function App() {
 
   // Builder workspace state
   const [builderAgentId, setBuilderAgentId] = useState<string | null>(null);
+  const [builderInitialSection, setBuilderInitialSection] = useState<BuilderSectionKey>('overview');
 
   // Landing page modal states
   const [isLandingBuilderOpen, setIsLandingBuilderOpen] = useState(false);
@@ -69,20 +71,38 @@ export default function App() {
       const rawHash = window.location.hash.replace('#', '');
       const hash = rawHash.toLowerCase();
 
-      // Deep linking to builder: /agents/new, /agents/:id/edit, /agents/:id, /builder/new, /builder/:id
-      const cleanPath = rawHash.startsWith('/') ? rawHash.substring(1) : rawHash;
-      if (cleanPath === 'agents/new' || cleanPath === 'builder/new') {
-        setViewMode('builder');
-        setBuilderAgentId('new');
-        return;
-      }
+      // Deep linking to builder: /agents/new, /agents/:id/edit, /agents/:id/test, /agents/:id, /builder/new, etc.
+      const cleanPath = (rawHash.startsWith('/') ? rawHash.substring(1) : rawHash).replace(/\/+$/, '');
+      const parts = cleanPath.split('/');
 
-      if (cleanPath.startsWith('agents/') || cleanPath.startsWith('builder/')) {
-        const parts = cleanPath.split('/');
+      if (parts[0] === 'agents' || parts[0] === 'builder') {
         const targetId = parts[1];
-        if (targetId && targetId !== 'new') {
+        const subAction = parts[2]?.toLowerCase();
+
+        if (targetId === 'new') {
+          setViewMode('builder');
+          setBuilderAgentId('new');
+          setBuilderInitialSection(subAction === 'test' ? 'testing' : 'overview');
+          return;
+        }
+
+        if (targetId) {
           setViewMode('builder');
           setBuilderAgentId(targetId);
+          if (subAction === 'test') {
+            setBuilderInitialSection('testing');
+          } else if (
+            subAction === 'instructions' ||
+            subAction === 'model' ||
+            subAction === 'tools' ||
+            subAction === 'knowledge' ||
+            subAction === 'permissions' ||
+            subAction === 'overview'
+          ) {
+            setBuilderInitialSection(subAction as BuilderSectionKey);
+          } else {
+            setBuilderInitialSection('overview');
+          }
           return;
         }
       }
@@ -122,16 +142,22 @@ export default function App() {
   const navigateToBuilder = (
     agentId?: string | null,
     template?: TemplateDefinition | null,
-    prompt?: string
+    prompt?: string,
+    initialSection: BuilderSectionKey = 'overview'
   ) => {
     setViewMode('builder');
     setBuilderAgentId(agentId || 'new');
     setTemplateForCreation(template || null);
     setInitialPromptForCreate(prompt);
+    setBuilderInitialSection(initialSection);
     if (agentId && agentId !== 'new') {
-      window.location.hash = `/agents/${agentId}/edit`;
+      window.location.hash = initialSection === 'testing'
+        ? `/agents/${agentId}/test`
+        : `/agents/${agentId}/edit`;
     } else {
-      window.location.hash = '/agents/new';
+      window.location.hash = initialSection === 'testing'
+        ? '/agents/new/test'
+        : '/agents/new';
     }
   };
 
@@ -169,6 +195,7 @@ export default function App() {
           agentId={builderAgentId}
           initialTemplate={templateForCreation}
           initialPrompt={initialPromptForCreate}
+          initialSection={builderInitialSection}
           onNavigateBack={() => switchToApp('agents')}
           onNavigateToIntegrations={() => switchToApp('integrations')}
           onNavigateToKnowledge={() => switchToApp('knowledge')}

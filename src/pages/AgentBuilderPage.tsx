@@ -23,6 +23,7 @@ interface AgentBuilderPageProps {
   agentId?: string | null; // null or 'new' = create new agent
   initialTemplate?: TemplateDefinition | null;
   initialPrompt?: string;
+  initialSection?: BuilderSectionKey;
   onNavigateBack: () => void;
   onNavigateToIntegrations?: () => void;
   onNavigateToKnowledge?: () => void;
@@ -34,6 +35,7 @@ export const AgentBuilderPage: React.FC<AgentBuilderPageProps> = ({
   agentId,
   initialTemplate,
   initialPrompt,
+  initialSection,
   onNavigateBack,
   onNavigateToIntegrations,
   onNavigateToKnowledge,
@@ -41,13 +43,20 @@ export const AgentBuilderPage: React.FC<AgentBuilderPageProps> = ({
   onAgentSaved,
 }) => {
   const { showToast } = useToast();
-  const [activeSection, setActiveSection] = useState<BuilderSectionKey>('overview');
+  const [activeSection, setActiveSection] = useState<BuilderSectionKey>(initialSection || 'overview');
   const [isValidationOpen, setIsValidationOpen] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [saveStatus, setSaveStatus] = useState<'unsaved' | 'saving' | 'saved' | 'error'>('saved');
   const [lastSavedAt, setLastSavedAt] = useState<string | undefined>(undefined);
   const [showExitConfirm, setShowExitConfirm] = useState(false);
   const [notFound, setNotFound] = useState(false);
+
+  // Sync activeSection when initialSection prop updates (e.g. from deep link hash change)
+  useEffect(() => {
+    if (initialSection) {
+      setActiveSection(initialSection);
+    }
+  }, [initialSection]);
 
   // Initialize agent state
   const [agent, setAgent] = useState<Agent>(() => {
@@ -262,13 +271,30 @@ export const AgentBuilderPage: React.FC<AgentBuilderPageProps> = ({
     );
   }
 
+  const handleSelectSection = useCallback((section: BuilderSectionKey) => {
+    setActiveSection(section);
+    if (agentId && agentId !== 'new') {
+      if (section === 'testing') {
+        window.location.hash = `/agents/${agentId}/test`;
+      } else {
+        window.location.hash = `/agents/${agentId}/edit`;
+      }
+    } else {
+      if (section === 'testing') {
+        window.location.hash = '/agents/new/test';
+      } else {
+        window.location.hash = '/agents/new';
+      }
+    }
+  }, [agentId]);
+
   return (
     <>
       <AgentBuilderShell
         agent={agent}
         onUpdateAgent={handleUpdateAgent}
         activeSection={activeSection}
-        onSelectSection={setActiveSection}
+        onSelectSection={handleSelectSection}
         onBack={handleBack}
         onSave={handleSave}
         isSaving={isSaving}
@@ -284,7 +310,12 @@ export const AgentBuilderPage: React.FC<AgentBuilderPageProps> = ({
             issues={validationResult.issues}
             readinessStage={validationResult.readinessStage}
             readinessLabel={validationResult.readinessLabel}
-            onJumpToSection={(sec) => setActiveSection(sec)}
+            onJumpToSection={(sec) => {
+              handleSelectSection(sec);
+              if (typeof window !== 'undefined' && window.innerWidth < 1280) {
+                setIsValidationOpen(false);
+              }
+            }}
             onClose={() => setIsValidationOpen(false)}
             isCollapsible={true}
           />
