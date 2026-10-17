@@ -1,0 +1,111 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
+  <defs>
+    <!-- Background Gradient -->
+    <radialGradient id="bgDepth" cx="50%" cy="50%" r="65%">
+      <stop offset="0%" stop-color="#0E1428"/>
+      <stop offset="60%" stop-color="#080B16"/>
+      <stop offset="100%" stop-color="#04060C"/>
+    </radialGradient>
+
+    <!-- Outer 'C' Electric Gradient -->
+    <linearGradient id="cGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38D9FF"/>
+      <stop offset="40%" stop-color="#4F70F8"/>
+      <stop offset="75%" stop-color="#7C3AED"/>
+      <stop offset="100%" stop-color="#8B5CF6"/>
+    </linearGradient>
+
+    <!-- Inner Core Radiant Gradient -->
+    <linearGradient id="coreGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF"/>
+      <stop offset="30%" stop-color="#38D9FF"/>
+      <stop offset="70%" stop-color="#6366F1"/>
+      <stop offset="100%" stop-color="#8B5CF6"/>
+    </linearGradient>
+
+    <!-- Core Radial Glow -->
+    <radialGradient id="coreAura" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#38D9FF" stop-opacity="0.85"/>
+      <stop offset="35%" stop-color="#38D9FF" stop-opacity="0.35"/>
+      <stop offset="70%" stop-color="#8B5CF6" stop-opacity="0.15"/>
+      <stop offset="100%" stop-color="#8B5CF6" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- Ambient Space Glow -->
+    <radialGradient id="ambientGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#38D9FF" stop-opacity="0.2"/>
+      <stop offset="50%" stop-color="#7C3AED" stop-opacity="0.08"/>
+      <stop offset="100%" stop-color="#080B16" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- Node Glow Filter -->
+    <filter id="nodeGlow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="10" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Container / Background Tile -->
+  <rect width="512" height="512" rx="116" fill="url(#bgDepth)"/>
+  <rect width="504" height="504" x="4" y="4" rx="112" fill="none" stroke="#1C2640" stroke-width="4" stroke-opacity="0.7"/>
+
+  <!-- Ambient Light Emission -->
+  <circle cx="256" cy="256" r="210" fill="url(#ambientGlow)"/>
+
+  <!-- Network Circuit Lines (Intelligent Agent Interconnects) -->
+  <g stroke="#38D9FF" stroke-width="3" stroke-dasharray="6 6" opacity="0.45">
+    <line x1="256" y1="256" x2="136" y2="256"/>
+    <line x1="256" y1="256" x2="346" y2="158"/>
+    <line x1="256" y1="256" x2="346" y2="354"/>
+    <line x1="256" y1="256" x2="256" y2="112" opacity="0.25"/>
+    <line x1="256" y1="256" x2="256" y2="400" opacity="0.25"/>
+  </g>
+
+  <!-- The Geometric 'C' Primary Form -->
+  <path d="M 346,158
+           C 310,110 240,94 186,114
+           C 118,138 82,202 82,256
+           C 82,310 118,374 186,398
+           C 240,418 310,402 346,354
+           L 302,318
+           C 278,348 230,358 194,342
+           C 152,324 136,284 136,256
+           C 136,228 152,188 194,170
+           C 230,154 278,164 302,194
+           Z"
+        fill="url(#cGrad)"
+  />
+
+  <!-- Top-Right Terminal Agent Node -->
+  <circle cx="346" cy="158" r="18" fill="#38D9FF" filter="url(#nodeGlow)"/>
+  <circle cx="346" cy="158" r="9" fill="#FFFFFF"/>
+
+  <!-- Bottom-Right Terminal Agent Node -->
+  <circle cx="346" cy="354" r="18" fill="#8B5CF6" filter="url(#nodeGlow)"/>
+  <circle cx="346" cy="354" r="9" fill="#FFFFFF"/>
+
+  <!-- Far-Left Perimeter Relay Node -->
+  <circle cx="82" cy="256" r="13" fill="#38D9FF" opacity="0.95"/>
+  <circle cx="82" cy="256" r="6.5" fill="#FFFFFF"/>
+
+  <!-- Glowing Central AI Core Aura -->
+  <circle cx="256" cy="256" r="76" fill="url(#coreAura)"/>
+
+  <!-- AI Core Diamond / Hex-Shield Chassis -->
+  <polygon points="256,198 298,225 298,287 256,314 214,287 214,225" 
+           fill="#080B16" 
+           stroke="url(#cGrad)" 
+           stroke-width="7"
+  />
+  <!-- Inner Faceted Core -->
+  <polygon points="256,214 284,233 284,279 256,298 228,279 228,233" 
+           fill="url(#coreGrad)"
+           filter="url(#nodeGlow)"
+  />
+
+  <!-- Central Singularity / Focus Node -->
+  <circle cx="256" cy="256" r="10" fill="#FFFFFF"/>
+</svg>

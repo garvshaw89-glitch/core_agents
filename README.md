@@ -184,6 +184,15 @@ graph TD
 ├── tsconfig.json                    # TypeScript compiler configuration
 ├── vercel.json                      # Vercel deployment & SPA rewrite routing
 ├── vite.config.ts                   # Vite build configuration and Tailwind integration
+├── public/                          # Static branding & favicon assets
+│   ├── favicon.svg                  # Primary scalable vector favicon
+│   ├── favicon-32x32.png            # Standard 32x32 browser favicon
+│   ├── favicon-16x16.png            # Small 16x16 browser favicon
+│   ├── apple-touch-icon.png         # 180x180 Apple touch icon
+│   ├── icon-192.png                 # 192x192 PWA / web app icon
+│   ├── icon-512.png                 # 512x512 high-resolution icon
+│   ├── favicon.ico                  # Legacy multi-resolution ICO (16x16, 32x32)
+│   └── site.webmanifest             # Web application manifest configuration
 └── src/
     ├── main.tsx                     # React DOM root entry point
     ├── App.tsx                      # Top-level shell, hash routing, and view switching
