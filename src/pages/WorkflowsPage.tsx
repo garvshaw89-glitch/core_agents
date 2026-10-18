@@ -107,19 +107,19 @@ export const WorkflowsPage: React.FC<WorkflowsPageProps> = ({ onCreateAgent }) =
       />
 
       {/* Educational Banner for Workflow Orchestration */}
-      <div className="p-4 rounded-xl bg-[#111118] border border-[#292936] flex flex-col sm:flex-row sm:items-center justify-between gap-4 text-xs">
+      <div className="p-4 rounded-xl bg-[#0D1220]/90 border border-slate-800/70 backdrop-blur-md flex flex-col sm:flex-row sm:items-center justify-between gap-4 text-xs">
         <div className="flex items-center gap-3">
-          <div className="p-2 rounded-lg bg-[#171720] text-[#A78BFA] shrink-0">
+          <div className="p-2 rounded-lg bg-[#38D9FF]/15 text-[#38D9FF] shrink-0 border border-[#38D9FF]/20">
             <Zap size={16} />
           </div>
           <div>
-            <div className="font-semibold text-[#F4F2FA]">How Workflows Connect Work</div>
-            <div className="text-[#A5A2B4]">
+            <div className="font-semibold text-[#F4F7FC]">How Workflows Connect Work</div>
+            <div className="text-[#9AA7BC]">
               Trigger (Schedule / Webhook) &rarr; Specialized Agent Execution &rarr; Consequential Approval &rarr; External Action
             </div>
           </div>
         </div>
-        <div className="text-[#777487] text-[11px] shrink-0">
+        <div className="text-[#64748B] text-[11px] shrink-0 font-mono">
           Deterministic execution · Zero hallucinations
         </div>
       </div>
@@ -139,7 +139,7 @@ export const WorkflowsPage: React.FC<WorkflowsPageProps> = ({ onCreateAgent }) =
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="w-full bg-[#111118] text-[#F4F2FA] text-xs rounded-xl border border-[#292936] px-3 py-2 focus:outline-none focus:border-[#A78BFA] cursor-pointer"
+            className="w-full bg-[#111827] text-[#F4F7FC] text-xs rounded-xl border border-slate-700/60 px-3 py-2 focus:outline-none focus:border-[#38D9FF] focus:ring-1 focus:ring-[#38D9FF] cursor-pointer"
           >
             <option value="all">All Statuses</option>
             <option value="active">Active</option>
@@ -176,22 +176,22 @@ export const WorkflowsPage: React.FC<WorkflowsPageProps> = ({ onCreateAgent }) =
           {filteredWorkflows.map((wf) => (
             <div
               key={wf.id}
-              className="p-5 rounded-2xl bg-[#111118] border border-[#292936] hover:border-[#3D3D4E] transition-all text-left flex flex-col md:flex-row md:items-center justify-between gap-4"
+              className="p-5 rounded-2xl bg-[#0D1220]/90 border border-slate-800/70 hover:border-[#38D9FF]/40 hover:bg-[#111827] transition-all text-left flex flex-col md:flex-row md:items-center justify-between gap-4 group"
             >
               <div className="space-y-1.5 min-w-0">
                 <div className="flex items-center gap-2.5">
-                  <h3 className="text-sm font-semibold text-[#F4F2FA]">{wf.name}</h3>
+                  <h3 className="text-sm font-semibold text-[#F4F7FC] group-hover:text-white">{wf.name}</h3>
                   <StatusBadge status={wf.status} size="sm" />
                   {wf.approvalRequired && (
-                    <span className="flex items-center gap-1 text-[10px] text-[#F2C879] bg-[#171720] px-2 py-0.5 rounded border border-[#292936]">
+                    <span className="flex items-center gap-1 text-[10px] text-[#FBBF24] bg-[#FBBF24]/10 px-2 py-0.5 rounded-full border border-[#FBBF24]/20 font-mono">
                       <ShieldCheck size={11} />
                       <span>Review Gate</span>
                     </span>
                   )}
                 </div>
-                <p className="text-xs text-[#A5A2B4] line-clamp-1">{wf.description}</p>
-                <div className="flex flex-wrap items-center gap-3 text-xs text-[#777487] pt-1">
-                  <span className="flex items-center gap-1 text-[#A78BFA]">
+                <p className="text-xs text-[#9AA7BC] line-clamp-1">{wf.description}</p>
+                <div className="flex flex-wrap items-center gap-3 text-xs text-[#64748B] pt-1">
+                  <span className="flex items-center gap-1 text-[#38D9FF] font-medium">
                     <Bot size={12} />
                     <span>{wf.agentName}</span>
                   </span>
@@ -202,7 +202,7 @@ export const WorkflowsPage: React.FC<WorkflowsPageProps> = ({ onCreateAgent }) =
                     </span>
                   )}
                   {wf.lastExecutionAt && (
-                    <span className="text-[11px]">
+                    <span className="text-[11px] font-mono">
                       Last executed:{' '}
                       {new Date(wf.lastExecutionAt).toLocaleDateString([], {
                         month: 'short',
@@ -214,7 +214,7 @@ export const WorkflowsPage: React.FC<WorkflowsPageProps> = ({ onCreateAgent }) =
               </div>
 
               {/* Action Buttons */}
-              <div className="flex items-center gap-2 shrink-0 pt-2 md:pt-0 border-t md:border-t-0 border-[#292936]">
+              <div className="flex items-center gap-2 shrink-0 pt-2 md:pt-0 border-t md:border-t-0 border-slate-800/60">
                 <Button
                   variant="secondary"
                   size="xs"
@@ -228,6 +228,7 @@ export const WorkflowsPage: React.FC<WorkflowsPageProps> = ({ onCreateAgent }) =
                   size="xs"
                   leftIcon={<Trash2 size={12} />}
                   onClick={() => setWorkflowToDelete(wf)}
+                  className="hover:text-[#FB7185] hover:border-[#FB7185]/40"
                 >
                   Delete
                 </Button>

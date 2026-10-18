@@ -15,15 +15,15 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
 
 const variantStyles: Record<ButtonVariant, string> = {
   primary:
-    'bg-[#F4F2FA] text-[#09090D] hover:bg-white active:bg-[#E2DEEE] shadow-sm hover:shadow-[#A78BFA]/10 font-semibold',
+    'bg-[#38D9FF] text-[#080B16] hover:bg-[#80E5FF] active:bg-[#22B8DC] shadow-sm hover:shadow-[0_0_16px_rgba(56,217,255,0.25)] font-semibold',
   secondary:
-    'bg-[#171720] text-[#F4F2FA] hover:bg-[#20202C] border border-[#292936] hover:border-[#3D3D4E] font-medium',
+    'bg-[#111827] text-[#F4F7FC] hover:bg-[#151D2E] border border-slate-700/40 hover:border-[#38D9FF]/40 font-medium',
   outline:
-    'bg-transparent text-[#F4F2FA] hover:bg-[#171720] border border-[#292936] hover:border-[#3D3D4E] font-medium',
+    'bg-transparent text-[#F4F7FC] hover:bg-[#111827] border border-slate-700/50 hover:border-slate-500 font-medium',
   ghost:
-    'bg-transparent text-[#A5A2B4] hover:text-[#F4F2FA] hover:bg-[#171720] font-medium',
+    'bg-transparent text-[#9AA7BC] hover:text-[#F4F7FC] hover:bg-[#111827]/80 font-medium',
   danger:
-    'bg-[#F07885]/10 text-[#F07885] hover:bg-[#F07885]/20 border border-[#F07885]/30 font-semibold',
+    'bg-[#FB7185]/10 text-[#FB7185] hover:bg-[#FB7185]/20 border border-[#FB7185]/30 font-semibold',
 };
 
 const sizeStyles: Record<ButtonSize, string> = {

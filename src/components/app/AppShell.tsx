@@ -50,6 +50,8 @@ interface AppShellProps {
   onCreateAgentAction?: () => void;
 }
 
+import { AmbientBackground } from '../../design-system/AmbientBackground';
+
 export const AppShell: React.FC<AppShellProps> = ({
   activePage,
   onNavigate,
@@ -130,53 +132,56 @@ export const AppShell: React.FC<AppShellProps> = ({
   };
 
   return (
-    <div className="min-h-screen bg-[#09090D] text-[#F4F2FA] flex flex-col md:flex-row antialiased selection:bg-[#A78BFA]/30 selection:text-white">
+    <div className="min-h-screen bg-[#080B16] text-[#F4F7FC] flex flex-col md:flex-row antialiased selection:bg-[#38D9FF]/20 selection:text-white relative">
+      {/* Ambient background light field */}
+      <AmbientBackground variant="standard" />
+
       {/* =========================================================================
           DESKTOP PERSISTENT SIDEBAR (~248px)
       ========================================================================= */}
       <aside
-        className="hidden md:flex flex-col w-[248px] shrink-0 bg-[#0D0D13] border-r border-[#292936] h-screen sticky top-0 z-30 select-none"
+        className="hidden md:flex flex-col w-[248px] shrink-0 bg-[#0D1220]/95 backdrop-blur-md border-r border-slate-800/70 h-screen sticky top-0 z-30 select-none"
         aria-label="Sidebar navigation"
       >
         {/* Brand & Wordmark */}
-        <div className="p-4 border-b border-[#292936]/80 flex items-center justify-between">
+        <div className="p-4 border-b border-slate-800/60 flex items-center justify-between">
           <button
             type="button"
             onClick={() => onNavigate('overview')}
-            className="flex items-center gap-2.5 hover:opacity-90 transition-opacity text-left cursor-pointer"
+            className="flex items-center gap-2.5 hover:opacity-95 transition-opacity text-left cursor-pointer group"
           >
             <CoreSymbol size={26} />
-            <span className="text-base font-semibold tracking-tight text-[#F4F2FA]">
-              CORE <span className="text-[#A5A2B4] font-normal">Agents</span>
+            <span className="text-base font-semibold tracking-tight text-[#F4F7FC]">
+              CORE <span className="text-[#38D9FF] font-normal">Agents</span>
             </span>
           </button>
         </div>
 
         {/* Workspace Selector */}
-        <div className="p-3 border-b border-[#292936]/60 relative">
+        <div className="p-3 border-b border-slate-800/60 relative">
           <button
             type="button"
             onClick={() => setIsWorkspaceDropdownOpen(!isWorkspaceDropdownOpen)}
-            className="w-full flex items-center justify-between p-2 rounded-xl bg-[#111118] border border-[#292936] hover:border-[#3D3D4E] transition-colors text-left cursor-pointer"
+            className="w-full flex items-center justify-between p-2 rounded-xl bg-[#111827] border border-slate-700/50 hover:border-[#38D9FF]/40 transition-colors text-left cursor-pointer"
           >
             <div className="flex items-center gap-2 min-w-0">
-              <div className="w-5 h-5 rounded-md bg-[#A78BFA]/15 text-[#A78BFA] flex items-center justify-center shrink-0">
+              <div className="w-5 h-5 rounded-md bg-[#38D9FF]/15 text-[#38D9FF] flex items-center justify-center shrink-0">
                 <Building size={12} />
               </div>
               <div className="min-w-0">
-                <div className="text-xs font-semibold text-[#F4F2FA] truncate">
+                <div className="text-xs font-semibold text-[#F4F7FC] truncate">
                   {profile.workspaceName}
                 </div>
-                <div className="text-[10px] text-[#777487] truncate">Team Tier · Active</div>
+                <div className="text-[10px] text-[#64748B] truncate">Team Tier · Active</div>
               </div>
             </div>
-            <ChevronDown size={14} className="text-[#777487] shrink-0" />
+            <ChevronDown size={14} className="text-[#64748B] shrink-0" />
           </button>
 
           {/* Workspace dropdown menu */}
           {isWorkspaceDropdownOpen && (
-            <div className="absolute top-full left-3 right-3 z-50 mt-1 rounded-xl bg-[#171720] border border-[#292936] p-1.5 shadow-2xl space-y-1">
-              <div className="text-[10px] font-mono text-[#777487] px-2 py-1">SWITCH WORKSPACE</div>
+            <div className="absolute top-full left-3 right-3 z-50 mt-1 rounded-xl bg-[#151D2E] border border-slate-700/60 p-1.5 shadow-2xl space-y-1">
+              <div className="text-[10px] font-mono text-[#64748B] px-2 py-1">SWITCH WORKSPACE</div>
               {workspaces.map((ws) => (
                 <button
                   key={ws}
@@ -192,8 +197,8 @@ export const AppShell: React.FC<AppShellProps> = ({
                   }}
                   className={`w-full flex items-center justify-between px-2.5 py-1.5 text-xs rounded-lg transition-colors cursor-pointer ${
                     profile.workspaceName === ws
-                      ? 'bg-[#A78BFA]/15 text-[#C4B5FD] font-semibold'
-                      : 'text-[#A5A2B4] hover:text-[#F4F2FA] hover:bg-[#111118]'
+                      ? 'bg-[#38D9FF]/15 text-[#38D9FF] font-semibold'
+                      : 'text-[#9AA7BC] hover:text-[#F4F7FC] hover:bg-[#111827]'
                   }`}
                 >
                   <span className="truncate">{ws}</span>
@@ -217,22 +222,22 @@ export const AppShell: React.FC<AppShellProps> = ({
                 onClick={() => onNavigate(item.id)}
                 className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-medium transition-all duration-150 cursor-pointer ${
                   isActive
-                    ? 'bg-[#A78BFA]/15 text-[#C4B5FD] font-semibold border border-[#A78BFA]/30 shadow-xs'
-                    : 'text-[#A5A2B4] hover:text-[#F4F2FA] hover:bg-[#111118]'
+                    ? 'bg-[#151D2E] text-[#F4F7FC] font-semibold border border-[#38D9FF]/40 shadow-xs'
+                    : 'text-[#9AA7BC] hover:text-[#F4F7FC] hover:bg-[#111827]'
                 }`}
                 aria-current={isActive ? 'page' : undefined}
               >
                 <div className="flex items-center gap-2.5 min-w-0">
                   <Icon
                     size={16}
-                    className={`shrink-0 ${isActive ? 'text-[#A78BFA]' : 'text-[#777487]'}`}
+                    className={`shrink-0 ${isActive ? 'text-[#38D9FF]' : 'text-[#64748B]'}`}
                   />
                   <span className="truncate">{item.label}</span>
                 </div>
 
                 {/* Badges for pending activity approvals */}
                 {item.id === 'activity' && pendingApprovalsCount > 0 && (
-                  <span className="w-4 h-4 rounded-full bg-[#F2C879] text-[#09090D] font-mono text-[10px] font-bold flex items-center justify-center shrink-0">
+                  <span className="w-4 h-4 rounded-full bg-[#FBBF24] text-[#080B16] font-mono text-[10px] font-bold flex items-center justify-center shrink-0">
                     {pendingApprovalsCount}
                   </span>
                 )}
@@ -241,16 +246,28 @@ export const AppShell: React.FC<AppShellProps> = ({
           })}
         </nav>
 
+        {/* Platform Status Indicator (Enterprise telemetry) */}
+        <div className="px-3 py-2 border-t border-slate-800/60">
+          <div className="p-2.5 rounded-xl bg-[#111827]/70 border border-slate-800/80">
+            <div className="flex items-center justify-between text-[11px] mb-1">
+              <span className="text-[#9AA7BC] font-medium">Platform status</span>
+              <span className="w-2 h-2 rounded-full bg-[#34D399] shadow-[0_0_6px_rgba(52,211,153,0.5)] animate-pulse" />
+            </div>
+            <div className="text-xs font-semibold text-[#F4F7FC]">All systems operational</div>
+            <div className="text-[10px] text-[#64748B] mt-0.5">Uptime: 99.98% · SLA Met</div>
+          </div>
+        </div>
+
         {/* Switch to Public Landing Page Quick Link */}
-        <div className="px-3 py-2 border-t border-[#292936]/60">
+        <div className="px-3 py-2 border-t border-slate-800/60">
           <button
             type="button"
             onClick={onSwitchToLanding}
-            className="w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-medium text-[#777487] hover:text-[#F4F2FA] hover:bg-[#111118] transition-colors cursor-pointer"
+            className="w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-medium text-[#9AA7BC] hover:text-[#F4F7FC] hover:bg-[#111827] transition-colors cursor-pointer"
             title="Preview public landing page"
           >
             <div className="flex items-center gap-2">
-              <Sparkles size={14} className="text-[#A78BFA]" />
+              <Sparkles size={14} className="text-[#38D9FF]" />
               <span>Public Landing Page</span>
             </div>
             <ExternalLink size={12} />
@@ -258,20 +275,20 @@ export const AppShell: React.FC<AppShellProps> = ({
         </div>
 
         {/* User Profile & Account Footer */}
-        <div className="p-3 border-t border-[#292936] bg-[#09090D]/50">
+        <div className="p-3 border-t border-slate-800/60 bg-[#0D1220]/70">
           <button
             type="button"
             onClick={() => onNavigate('settings')}
-            className="w-full flex items-center gap-2.5 p-2 rounded-xl hover:bg-[#111118] transition-colors text-left cursor-pointer group"
+            className="w-full flex items-center gap-2.5 p-2 rounded-xl hover:bg-[#111827] transition-colors text-left cursor-pointer group"
           >
-            <div className="w-8 h-8 rounded-full bg-[#A78BFA]/20 text-[#A78BFA] border border-[#A78BFA]/40 font-semibold text-xs flex items-center justify-center shrink-0">
+            <div className="w-8 h-8 rounded-full bg-[#38D9FF]/15 text-[#38D9FF] border border-[#38D9FF]/30 font-semibold text-xs flex items-center justify-center shrink-0">
               {profile.name.charAt(0)}
             </div>
             <div className="min-w-0 flex-1">
-              <div className="text-xs font-semibold text-[#F4F2FA] truncate group-hover:text-white">
+              <div className="text-xs font-semibold text-[#F4F7FC] truncate group-hover:text-white">
                 {profile.name}
               </div>
-              <div className="text-[10px] text-[#777487] truncate">{profile.email}</div>
+              <div className="text-[10px] text-[#9AA7BC] truncate">{profile.email}</div>
             </div>
           </button>
         </div>
@@ -282,22 +299,22 @@ export const AppShell: React.FC<AppShellProps> = ({
       ========================================================================= */}
       <div className="flex-1 flex flex-col min-w-0 min-h-screen">
         {/* Top Bar Navigation */}
-        <header className="sticky top-0 z-20 bg-[#09090D]/90 backdrop-blur-md border-b border-[#292936] px-4 sm:px-6 py-3.5 flex items-center justify-between gap-4">
+        <header className="sticky top-0 z-20 bg-[#0D1220]/90 backdrop-blur-md border-b border-slate-800/70 px-4 sm:px-6 py-3 flex items-center justify-between gap-4">
           {/* Left: Mobile hamburger + Page Title */}
           <div className="flex items-center gap-3">
             <button
               type="button"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="p-1.5 rounded-lg text-[#A5A2B4] hover:text-[#F4F2FA] hover:bg-[#171720] md:hidden"
+              className="p-1.5 rounded-lg text-[#9AA7BC] hover:text-[#F4F7FC] hover:bg-[#151D2E] md:hidden cursor-pointer"
               aria-label="Toggle navigation menu"
             >
               <Menu size={20} />
             </button>
 
-            <div className="flex items-center gap-2 text-xs font-medium text-[#777487]">
-              <span>CORE</span>
+            <div className="flex items-center gap-2 text-xs font-medium text-[#64748B]">
+              <span className="text-[#38D9FF] font-semibold">CORE</span>
               <span>/</span>
-              <span className="text-[#F4F2FA] capitalize font-semibold">
+              <span className="text-[#F4F7FC] capitalize font-semibold">
                 {activePage === 'overview'
                   ? 'Overview'
                   : activePage === 'agents'
@@ -313,12 +330,12 @@ export const AppShell: React.FC<AppShellProps> = ({
             <button
               type="button"
               onClick={() => setIsCommandPaletteOpen(true)}
-              className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-[#111118] border border-[#292936] hover:border-[#3D3D4E] text-[#777487] hover:text-[#A5A2B4] text-xs transition-colors cursor-pointer"
+              className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-[#111827] border border-slate-700/60 hover:border-[#38D9FF]/50 text-[#9AA7BC] hover:text-[#F4F7FC] text-xs transition-colors cursor-pointer shadow-xs"
               title="Search and commands (⌘K)"
             >
-              <Search size={14} className="text-[#A78BFA]" />
+              <Search size={14} className="text-[#38D9FF]" />
               <span className="hidden sm:inline">Search workspace...</span>
-              <kbd className="hidden sm:inline-block font-mono text-[10px] bg-[#171720] border border-[#292936] px-1.5 py-0.2 rounded text-[#777487]">
+              <kbd className="hidden sm:inline-block font-mono text-[10px] bg-[#151D2E] border border-slate-700/80 px-1.5 py-0.5 rounded text-[#9AA7BC]">
                 ⌘K
               </kbd>
             </button>
@@ -327,12 +344,12 @@ export const AppShell: React.FC<AppShellProps> = ({
             <button
               type="button"
               onClick={() => setIsNotificationsOpen(true)}
-              className="relative p-2 rounded-xl bg-[#111118] border border-[#292936] hover:border-[#3D3D4E] text-[#A5A2B4] hover:text-[#F4F2FA] transition-colors cursor-pointer"
+              className="relative p-2 rounded-xl bg-[#111827] border border-slate-700/60 hover:border-[#38D9FF]/50 text-[#9AA7BC] hover:text-[#F4F7FC] transition-colors cursor-pointer"
               aria-label="Notifications"
             >
               <Bell size={16} />
               {pendingApprovalsCount > 0 && (
-                <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-[#F2C879] text-[#09090D] font-mono text-[10px] font-bold flex items-center justify-center">
+                <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-[#FBBF24] text-[#080B16] font-mono text-[10px] font-bold flex items-center justify-center shadow-xs">
                   {pendingApprovalsCount}
                 </span>
               )}
@@ -342,7 +359,7 @@ export const AppShell: React.FC<AppShellProps> = ({
             <button
               type="button"
               onClick={() => (onCreateAgentAction ? onCreateAgentAction() : handleOpenCreateWithPrompt())}
-              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-semibold text-[#09090D] bg-[#F4F2FA] hover:bg-white active:bg-[#E2DEEE] transition-all rounded-xl shadow-xs cursor-pointer"
+              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-semibold text-[#080B16] bg-[#38D9FF] hover:bg-[#80E5FF] active:bg-[#22B8DC] transition-all rounded-xl shadow-[0_0_12px_rgba(56,217,255,0.25)] cursor-pointer"
             >
               <Plus size={14} />
               <span className="hidden sm:inline">Create agent</span>
@@ -361,13 +378,13 @@ export const AppShell: React.FC<AppShellProps> = ({
         ========================================================================= */}
         <nav
           aria-label="Mobile bottom navigation"
-          className="md:hidden fixed bottom-0 left-0 right-0 z-30 bg-[#0D0D13]/95 backdrop-blur-xl border-t border-[#292936] px-2 py-1.5 flex items-center justify-around"
+          className="md:hidden fixed bottom-0 left-0 right-0 z-30 bg-[#0D1220]/95 backdrop-blur-xl border-t border-slate-800/80 px-2 py-1.5 flex items-center justify-around"
         >
           <button
             type="button"
             onClick={() => onNavigate('overview')}
             className={`flex flex-col items-center py-1 px-2 text-[10px] font-medium transition-colors ${
-              activePage === 'overview' ? 'text-[#A78BFA]' : 'text-[#777487]'
+              activePage === 'overview' ? 'text-[#38D9FF]' : 'text-[#64748B]'
             }`}
           >
             <LayoutDashboard size={18} />
@@ -378,7 +395,7 @@ export const AppShell: React.FC<AppShellProps> = ({
             type="button"
             onClick={() => onNavigate('agents')}
             className={`flex flex-col items-center py-1 px-2 text-[10px] font-medium transition-colors ${
-              activePage === 'agents' ? 'text-[#A78BFA]' : 'text-[#777487]'
+              activePage === 'agents' ? 'text-[#38D9FF]' : 'text-[#64748B]'
             }`}
           >
             <Bot size={18} />
@@ -389,7 +406,7 @@ export const AppShell: React.FC<AppShellProps> = ({
             type="button"
             onClick={() => onNavigate('templates')}
             className={`flex flex-col items-center py-1 px-2 text-[10px] font-medium transition-colors ${
-              activePage === 'templates' ? 'text-[#A78BFA]' : 'text-[#777487]'
+              activePage === 'templates' ? 'text-[#38D9FF]' : 'text-[#64748B]'
             }`}
           >
             <BookOpen size={18} />
@@ -400,7 +417,7 @@ export const AppShell: React.FC<AppShellProps> = ({
             type="button"
             onClick={() => onNavigate('workflows')}
             className={`flex flex-col items-center py-1 px-2 text-[10px] font-medium transition-colors ${
-              activePage === 'workflows' ? 'text-[#A78BFA]' : 'text-[#777487]'
+              activePage === 'workflows' ? 'text-[#38D9FF]' : 'text-[#64748B]'
             }`}
           >
             <GitFork size={18} />
@@ -410,7 +427,7 @@ export const AppShell: React.FC<AppShellProps> = ({
           <button
             type="button"
             onClick={() => setIsMobileMenuOpen(true)}
-            className="flex flex-col items-center py-1 px-2 text-[10px] font-medium text-[#777487] hover:text-[#F4F2FA]"
+            className="flex flex-col items-center py-1 px-2 text-[10px] font-medium text-[#64748B] hover:text-[#F4F7FC]"
           >
             <Menu size={18} />
             <span className="mt-1">More</span>
@@ -425,19 +442,19 @@ export const AppShell: React.FC<AppShellProps> = ({
             aria-modal="true"
           >
             <div
-              className="w-4/5 max-w-xs bg-[#0D0D13] border-l border-[#292936] h-full p-6 flex flex-col justify-between"
+              className="w-4/5 max-w-xs bg-[#0D1220] border-l border-slate-800/80 h-full p-6 flex flex-col justify-between"
               onClick={(e) => e.stopPropagation()}
             >
               <div className="space-y-4">
-                <div className="flex items-center justify-between pb-3 border-b border-[#292936]">
+                <div className="flex items-center justify-between pb-3 border-b border-slate-800/70">
                   <div className="flex items-center gap-2">
                     <CoreSymbol size={22} />
-                    <span className="font-semibold text-sm text-[#F4F2FA]">Navigation</span>
+                    <span className="font-semibold text-sm text-[#F4F7FC]">Navigation</span>
                   </div>
                   <button
                     type="button"
                     onClick={() => setIsMobileMenuOpen(false)}
-                    className="p-1 rounded-lg text-[#777487] hover:text-[#F4F2FA]"
+                    className="p-1 rounded-lg text-[#64748B] hover:text-[#F4F7FC]"
                   >
                     <X size={18} />
                   </button>
@@ -455,10 +472,10 @@ export const AppShell: React.FC<AppShellProps> = ({
                           onNavigate(item.id);
                           setIsMobileMenuOpen(false);
                         }}
-                        className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-medium ${
+                        className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-medium cursor-pointer ${
                           isActive
-                            ? 'bg-[#A78BFA]/15 text-[#C4B5FD] font-semibold'
-                            : 'text-[#A5A2B4] hover:bg-[#111118]'
+                            ? 'bg-[#151D2E] text-[#38D9FF] font-semibold border border-[#38D9FF]/40'
+                            : 'text-[#9AA7BC] hover:bg-[#111827] hover:text-[#F4F7FC]'
                         }`}
                       >
                         <div className="flex items-center gap-2.5">
@@ -471,14 +488,14 @@ export const AppShell: React.FC<AppShellProps> = ({
                 </div>
               </div>
 
-              <div className="pt-4 border-t border-[#292936] space-y-2">
+              <div className="pt-4 border-t border-slate-800/70 space-y-2">
                 <button
                   type="button"
                   onClick={() => {
                     setIsMobileMenuOpen(false);
                     onSwitchToLanding();
                   }}
-                  className="w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs text-[#A78BFA] bg-[#171720]"
+                  className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs text-[#38D9FF] bg-[#111827] hover:bg-[#151D2E] transition-colors cursor-pointer"
                 >
                   <span>Public Landing Page</span>
                   <ExternalLink size={13} />

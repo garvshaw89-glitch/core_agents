@@ -118,7 +118,7 @@ export const MyAgentsPage: React.FC<MyAgentsPageProps> = ({
       />
 
       {/* Filter and Control Bar */}
-      <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3 p-3.5 rounded-2xl bg-[#111118] border border-[#292936]">
+      <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3 p-3.5 rounded-2xl bg-[#0D1220]/90 border border-slate-800/70 shadow-sm backdrop-blur-md">
         {/* Search Input */}
         <div className="flex-1 max-w-md">
           <SearchField
@@ -136,7 +136,7 @@ export const MyAgentsPage: React.FC<MyAgentsPageProps> = ({
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
-              className="w-full bg-[#171720] text-[#F4F2FA] text-xs rounded-xl border border-[#292936] px-3 py-2 focus:outline-none focus:border-[#A78BFA] cursor-pointer"
+              className="w-full bg-[#111827] text-[#F4F7FC] text-xs rounded-xl border border-slate-700/60 px-3 py-2 focus:outline-none focus:border-[#38D9FF] focus:ring-1 focus:ring-[#38D9FF] cursor-pointer"
             >
               <option value="all">All Statuses</option>
               <option value="active">Active</option>
@@ -151,7 +151,7 @@ export const MyAgentsPage: React.FC<MyAgentsPageProps> = ({
             <select
               value={categoryFilter}
               onChange={(e) => setCategoryFilter(e.target.value)}
-              className="w-full bg-[#171720] text-[#F4F2FA] text-xs rounded-xl border border-[#292936] px-3 py-2 focus:outline-none focus:border-[#A78BFA] cursor-pointer"
+              className="w-full bg-[#111827] text-[#F4F7FC] text-xs rounded-xl border border-slate-700/60 px-3 py-2 focus:outline-none focus:border-[#38D9FF] focus:ring-1 focus:ring-[#38D9FF] cursor-pointer"
             >
               <option value="all">All Domains</option>
               <option value="research">Research</option>
@@ -167,7 +167,7 @@ export const MyAgentsPage: React.FC<MyAgentsPageProps> = ({
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
-              className="w-full bg-[#171720] text-[#F4F2FA] text-xs rounded-xl border border-[#292936] px-3 py-2 focus:outline-none focus:border-[#A78BFA] cursor-pointer"
+              className="w-full bg-[#111827] text-[#F4F7FC] text-xs rounded-xl border border-slate-700/60 px-3 py-2 focus:outline-none focus:border-[#38D9FF] focus:ring-1 focus:ring-[#38D9FF] cursor-pointer"
             >
               <option value="recently_updated">Recently Updated</option>
               <option value="name">Sort by Name</option>
@@ -176,12 +176,14 @@ export const MyAgentsPage: React.FC<MyAgentsPageProps> = ({
           </div>
 
           {/* View Mode Toggle */}
-          <div className="flex items-center p-1 bg-[#171720] border border-[#292936] rounded-xl">
+          <div className="flex items-center p-1 bg-[#111827] border border-slate-800/80 rounded-xl">
             <button
               type="button"
               onClick={() => setLayout('grid')}
               className={`p-1.5 rounded-lg transition-colors cursor-pointer ${
-                layout === 'grid' ? 'bg-[#111118] text-[#F4F2FA] shadow-sm' : 'text-[#777487] hover:text-[#A5A2B4]'
+                layout === 'grid'
+                  ? 'bg-[#151D2E] text-[#38D9FF] shadow-xs font-semibold'
+                  : 'text-[#64748B] hover:text-[#F4F7FC]'
               }`}
               aria-label="Grid layout"
             >
@@ -191,7 +193,9 @@ export const MyAgentsPage: React.FC<MyAgentsPageProps> = ({
               type="button"
               onClick={() => setLayout('list')}
               className={`p-1.5 rounded-lg transition-colors cursor-pointer ${
-                layout === 'list' ? 'bg-[#111118] text-[#F4F2FA] shadow-sm' : 'text-[#777487] hover:text-[#A5A2B4]'
+                layout === 'list'
+                  ? 'bg-[#151D2E] text-[#38D9FF] shadow-xs font-semibold'
+                  : 'text-[#64748B] hover:text-[#F4F7FC]'
               }`}
               aria-label="List layout"
             >

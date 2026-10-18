@@ -231,7 +231,7 @@ export const TemplatesPage: React.FC<TemplatesPageProps> = ({
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value as any)}
-              className="bg-[#111118] text-[#F4F2FA] text-xs rounded-xl border border-[#292936] px-3 py-2.5 focus:outline-none focus:border-[#A78BFA] cursor-pointer"
+              className="bg-[#111827] text-[#F4F7FC] text-xs rounded-xl border border-slate-700/60 px-3 py-2.5 focus:outline-none focus:border-[#38D9FF] focus:ring-1 focus:ring-[#38D9FF] cursor-pointer"
             >
               <option value="recommended">Curated Rank</option>
               <option value="name">Name: A–Z</option>
@@ -240,12 +240,12 @@ export const TemplatesPage: React.FC<TemplatesPageProps> = ({
             </select>
 
             {/* View Mode Toggle */}
-            <div className="hidden sm:flex items-center p-1 bg-[#111118] border border-[#292936] rounded-xl">
+            <div className="hidden sm:flex items-center p-1 bg-[#111827] border border-slate-800/80 rounded-xl">
               <button
                 type="button"
                 onClick={() => setLayout('grid')}
                 className={`p-1.5 rounded-lg transition-colors cursor-pointer ${
-                  layout === 'grid' ? 'bg-[#171720] text-[#F4F2FA] shadow-xs' : 'text-[#777487] hover:text-[#A5A2B4]'
+                  layout === 'grid' ? 'bg-[#151D2E] text-[#38D9FF] shadow-xs' : 'text-[#64748B] hover:text-[#F4F7FC]'
                 }`}
                 aria-label="Grid view"
               >
@@ -255,7 +255,7 @@ export const TemplatesPage: React.FC<TemplatesPageProps> = ({
                 type="button"
                 onClick={() => setLayout('list')}
                 className={`p-1.5 rounded-lg transition-colors cursor-pointer ${
-                  layout === 'list' ? 'bg-[#171720] text-[#F4F2FA] shadow-xs' : 'text-[#777487] hover:text-[#A5A2B4]'
+                  layout === 'list' ? 'bg-[#151D2E] text-[#38D9FF] shadow-xs' : 'text-[#64748B] hover:text-[#F4F7FC]'
                 }`}
                 aria-label="List view"
               >
@@ -278,14 +278,14 @@ export const TemplatesPage: React.FC<TemplatesPageProps> = ({
                 onClick={() => setActiveCategory(cat.id)}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium whitespace-nowrap transition-colors cursor-pointer ${
                   isActive
-                    ? 'bg-[#A78BFA]/15 text-[#C4B5FD] font-semibold border border-[#A78BFA]/30'
-                    : 'bg-[#111118] text-[#A5A2B4] hover:text-[#F4F2FA] border border-[#292936] hover:border-[#3D3D4E]'
+                    ? 'bg-[#38D9FF]/15 text-[#38D9FF] font-semibold border border-[#38D9FF]/40'
+                    : 'bg-[#0D1220] text-[#9AA7BC] hover:text-[#F4F7FC] border border-slate-800/80 hover:border-slate-700'
                 }`}
               >
                 <span>{cat.label}</span>
                 <span
-                  className={`text-[10px] font-mono px-1.5 py-0.2 rounded ${
-                    isActive ? 'bg-[#A78BFA]/20 text-[#C4B5FD]' : 'bg-[#171720] text-[#777487]'
+                  className={`text-[10px] font-mono px-1.5 py-0.2 rounded-full ${
+                    isActive ? 'bg-[#38D9FF]/20 text-[#38D9FF]' : 'bg-[#111827] text-[#64748B]'
                   }`}
                 >
                   {count}
@@ -297,15 +297,15 @@ export const TemplatesPage: React.FC<TemplatesPageProps> = ({
 
         {/* 4.6 Collapsible Advanced Filter Drawer */}
         {showAdvancedFilters && (
-          <div className="p-4 rounded-2xl bg-[#111118] border border-[#292936] grid grid-cols-1 sm:grid-cols-3 gap-3 animate-in fade-in-0 duration-100">
+          <div className="p-4 rounded-2xl bg-[#0D1220]/95 border border-slate-800/80 grid grid-cols-1 sm:grid-cols-3 gap-3 animate-in fade-in-0 duration-100">
             <div>
-              <label className="block text-[11px] font-medium text-[#777487] mb-1">
+              <label className="block text-[11px] font-medium text-[#64748B] mb-1 font-mono">
                 Setup Complexity
               </label>
               <select
                 value={complexityFilter}
                 onChange={(e) => setComplexityFilter(e.target.value)}
-                className="w-full bg-[#09090D] text-[#F4F2FA] text-xs rounded-xl border border-[#292936] p-2 focus:outline-none focus:border-[#A78BFA]"
+                className="w-full bg-[#111827] text-[#F4F7FC] text-xs rounded-xl border border-slate-700/60 p-2 focus:outline-none focus:border-[#38D9FF]"
               >
                 <option value="all">All Complexities</option>
                 <option value="Minimal">Minimal (&lt;1 min)</option>
@@ -315,13 +315,13 @@ export const TemplatesPage: React.FC<TemplatesPageProps> = ({
             </div>
 
             <div>
-              <label className="block text-[11px] font-medium text-[#777487] mb-1">
+              <label className="block text-[11px] font-medium text-[#64748B] mb-1 font-mono">
                 Integration Requirements
               </label>
               <select
                 value={integrationFilter}
                 onChange={(e) => setIntegrationFilter(e.target.value)}
-                className="w-full bg-[#09090D] text-[#F4F2FA] text-xs rounded-xl border border-[#292936] p-2 focus:outline-none focus:border-[#A78BFA]"
+                className="w-full bg-[#111827] text-[#F4F7FC] text-xs rounded-xl border border-slate-700/60 p-2 focus:outline-none focus:border-[#38D9FF]"
               >
                 <option value="all">All Integration Types</option>
                 <option value="none">Zero External OAuth Required</option>
@@ -330,13 +330,13 @@ export const TemplatesPage: React.FC<TemplatesPageProps> = ({
             </div>
 
             <div>
-              <label className="block text-[11px] font-medium text-[#777487] mb-1">
+              <label className="block text-[11px] font-medium text-[#64748B] mb-1 font-mono">
                 Template Origin
               </label>
               <select
                 value={originFilter}
                 onChange={(e) => setOriginFilter(e.target.value as any)}
-                className="w-full bg-[#09090D] text-[#F4F2FA] text-xs rounded-xl border border-[#292936] p-2 focus:outline-none focus:border-[#A78BFA]"
+                className="w-full bg-[#111827] text-[#F4F7FC] text-xs rounded-xl border border-slate-700/60 p-2 focus:outline-none focus:border-[#38D9FF]"
               >
                 <option value="all">All Blueprints</option>
                 <option value="builtin">Curated Built-in</option>

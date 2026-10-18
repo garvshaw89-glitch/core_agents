@@ -84,11 +84,11 @@ export const IntegrationsPage: React.FC = () => {
       />
 
       {/* Security Contract Notice */}
-      <div className="p-4 rounded-xl bg-[#111118] border border-[#292936] flex items-start gap-3 text-xs">
-        <Lock size={16} className="text-[#A78BFA] shrink-0 mt-0.5" />
+      <div className="p-4 rounded-xl bg-[#0D1220]/90 border border-slate-800/70 backdrop-blur-md flex items-start gap-3 text-xs">
+        <Lock size={16} className="text-[#38D9FF] shrink-0 mt-0.5" />
         <div className="space-y-1">
-          <div className="font-semibold text-[#F4F2FA]">Strict Boundary & Secret Security</div>
-          <p className="text-[#A5A2B4] leading-relaxed">
+          <div className="font-semibold text-[#F4F7FC]">Strict Boundary & Secret Security</div>
+          <p className="text-[#9AA7BC] leading-relaxed">
             CORE Agents never stores or exposes unencrypted OAuth client secrets or database passwords in client bundles.
             External tool connections operate with scoped, least-privilege tokens.
           </p>
@@ -104,30 +104,30 @@ export const IntegrationsPage: React.FC = () => {
           return (
             <div
               key={item.id}
-              className="p-6 rounded-2xl bg-[#111118] border border-[#292936] flex flex-col justify-between text-left space-y-4"
+              className="p-6 rounded-2xl bg-[#0D1220]/90 border border-slate-800/70 hover:border-[#38D9FF]/40 hover:bg-[#111827] transition-all flex flex-col justify-between text-left space-y-4 group"
             >
               <div>
                 <div className="flex items-center justify-between mb-4">
-                  <div className="w-11 h-11 rounded-xl bg-[#171720] border border-[#292936] text-[#A78BFA] flex items-center justify-center">
+                  <div className="w-11 h-11 rounded-xl bg-[#151D2E] border border-slate-700/60 text-[#38D9FF] flex items-center justify-center group-hover:scale-105 transition-transform">
                     <IconComponent size={20} />
                   </div>
                   <StatusBadge status={item.status} size="sm" />
                 </div>
 
-                <h3 className="text-base font-semibold text-[#F4F2FA] mb-1">{item.name}</h3>
-                <p className="text-xs text-[#A5A2B4] leading-relaxed mb-4">{item.description}</p>
+                <h3 className="text-base font-semibold text-[#F4F7FC] mb-1 group-hover:text-white">{item.name}</h3>
+                <p className="text-xs text-[#9AA7BC] leading-relaxed mb-4">{item.description}</p>
 
                 {/* Scopes Whitelist */}
                 <div className="space-y-1.5">
-                  <div className="text-[11px] text-[#777487] flex items-center gap-1">
-                    <ShieldCheck size={12} className="text-[#A78BFA]" />
+                  <div className="text-[11px] text-[#64748B] flex items-center gap-1 font-mono">
+                    <ShieldCheck size={12} className="text-[#38D9FF]" />
                     <span>Required scopes:</span>
                   </div>
                   <div className="flex flex-wrap gap-1.5">
                     {item.scopes.map((scope) => (
                       <span
                         key={scope}
-                        className="text-[10px] font-mono px-2 py-0.5 rounded bg-[#09090D] border border-[#292936] text-[#A5A2B4]"
+                        className="text-[10px] font-mono px-2 py-0.5 rounded-md bg-[#111827] border border-slate-800 text-[#9AA7BC]"
                       >
                         {scope}
                       </span>
@@ -137,8 +137,8 @@ export const IntegrationsPage: React.FC = () => {
               </div>
 
               {/* Action Button */}
-              <div className="pt-3 border-t border-[#292936]/80 flex items-center justify-between">
-                <span className="text-[11px] text-[#777487]">
+              <div className="pt-3 border-t border-slate-800/70 flex items-center justify-between">
+                <span className="text-[11px] text-[#64748B] font-mono">
                   {isConnected && item.connectedAt ? (
                     <>Connected on {new Date(item.connectedAt).toLocaleDateString([], { month: 'short', day: 'numeric' })}</>
                   ) : (

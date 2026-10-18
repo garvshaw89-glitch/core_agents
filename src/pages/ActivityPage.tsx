@@ -72,7 +72,7 @@ export const ActivityPage: React.FC<ActivityPageProps> = ({ onNavigateToAgents }
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
-              className="w-full bg-[#111118] text-[#F4F2FA] text-xs rounded-xl border border-[#292936] px-3 py-2 focus:outline-none focus:border-[#A78BFA] cursor-pointer"
+              className="w-full bg-[#111827] text-[#F4F7FC] text-xs rounded-xl border border-slate-700/60 px-3 py-2 focus:outline-none focus:border-[#38D9FF] focus:ring-1 focus:ring-[#38D9FF] cursor-pointer"
             >
               <option value="all">All Statuses</option>
               <option value="completed">Completed</option>
@@ -85,7 +85,7 @@ export const ActivityPage: React.FC<ActivityPageProps> = ({ onNavigateToAgents }
           <button
             type="button"
             onClick={loadActivities}
-            className="p-2 rounded-xl bg-[#111118] border border-[#292936] text-[#777487] hover:text-[#F4F2FA] hover:border-[#3D3D4E] transition-colors cursor-pointer"
+            className="p-2 rounded-xl bg-[#111827] border border-slate-700/60 text-[#9AA7BC] hover:text-[#F4F7FC] hover:border-[#38D9FF]/40 transition-colors cursor-pointer"
             aria-label="Refresh activity"
           >
             <RefreshCw size={14} />

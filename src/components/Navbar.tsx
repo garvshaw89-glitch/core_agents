@@ -39,8 +39,8 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenGetStarted, onOpenSignIn }
     <header
       className={`fixed top-0 left-0 right-0 z-40 transition-all duration-200 ${
         isScrolled
-          ? 'bg-[#09090D]/90 backdrop-blur-md border-b border-[#292936] py-3.5 shadow-lg shadow-black/20'
-          : 'bg-transparent border-b border-[#292936]/40 py-5'
+          ? 'bg-[#080B16]/90 backdrop-blur-md border-b border-slate-800/80 py-3.5 shadow-lg shadow-black/40'
+          : 'bg-transparent border-b border-slate-800/40 py-5'
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -48,26 +48,26 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenGetStarted, onOpenSignIn }
           {/* Zone 1: Brand Wordmark with CORE symbol */}
           <a
             href="#"
-            className="flex items-center gap-2.5 text-[#F4F2FA] hover:text-white transition-colors group whitespace-nowrap shrink-0"
+            className="flex items-center gap-2.5 text-[#F4F7FC] hover:text-white transition-colors group whitespace-nowrap shrink-0"
             aria-label="CORE Agents Home"
           >
             <CoreSymbol size={28} className="group-hover:scale-105 transition-transform duration-200" />
-            <span className="text-lg font-semibold tracking-tight text-[#F4F2FA]">
-              CORE <span className="text-[#A5A2B4] font-normal">Agents</span>
+            <span className="text-lg font-semibold tracking-tight text-[#F4F7FC]">
+              CORE <span className="text-[#38D9FF] font-normal">Agents</span>
             </span>
           </a>
 
           {/* Zone 2: Navigation Links (Desktop) */}
           <nav
             aria-label="Primary navigation"
-            className="hidden md:flex items-center gap-8 text-sm font-medium text-[#A5A2B4]"
+            className="hidden md:flex items-center gap-8 text-sm font-medium text-[#9AA7BC]"
           >
             {navLinks.map((link) => (
               <a
                 key={link.label}
                 href={link.href}
                 onClick={(e) => handleLinkClick(e, link.href)}
-                className="hover:text-[#F4F2FA] transition-colors relative py-1 hover:underline underline-offset-8 decoration-[#A78BFA] decoration-2 whitespace-nowrap shrink-0"
+                className="hover:text-[#F4F7FC] transition-colors relative py-1 hover:underline underline-offset-8 decoration-[#38D9FF] decoration-2 whitespace-nowrap shrink-0"
               >
                 {link.label}
               </a>
@@ -79,17 +79,17 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenGetStarted, onOpenSignIn }
             <button
               type="button"
               onClick={onOpenSignIn}
-              className="px-3.5 py-1.5 text-xs font-medium text-[#A5A2B4] hover:text-[#F4F2FA] transition-colors rounded-lg hover:bg-[#171720] focus-visible:outline-2 focus-visible:outline-[#A78BFA] whitespace-nowrap shrink-0"
+              className="px-3.5 py-1.5 text-xs font-medium text-[#9AA7BC] hover:text-[#F4F7FC] transition-colors rounded-lg hover:bg-[#111827] focus-visible:outline-2 focus-visible:outline-[#38D9FF] whitespace-nowrap shrink-0 cursor-pointer"
             >
               Sign in
             </button>
             <button
               type="button"
               onClick={onOpenGetStarted}
-              className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-semibold text-[#09090D] bg-[#F4F2FA] hover:bg-white active:bg-[#E2DEEE] transition-all rounded-lg shadow-sm hover:shadow-md hover:shadow-[#A78BFA]/10 focus-visible:outline-2 focus-visible:outline-[#A78BFA] whitespace-nowrap shrink-0"
+              className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-semibold text-[#080B16] bg-[#38D9FF] hover:bg-[#80E5FF] active:bg-[#22B8DC] transition-all rounded-lg shadow-sm hover:shadow-[0_0_16px_rgba(56,217,255,0.3)] focus-visible:outline-2 focus-visible:outline-[#38D9FF] whitespace-nowrap shrink-0 cursor-pointer"
             >
               Get started
-              <ArrowUpRight size={14} className="text-[#09090D]" />
+              <ArrowUpRight size={14} className="text-[#080B16]" />
             </button>
           </div>
 

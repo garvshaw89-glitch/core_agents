@@ -95,10 +95,10 @@ export const SettingsPage: React.FC = () => {
 
       {/* Profile Tab */}
       {activeTab === 'profile' && (
-        <form onSubmit={handleSaveProfile} className="max-w-xl space-y-6 p-6 rounded-2xl bg-[#111118] border border-[#292936] text-left">
+        <form onSubmit={handleSaveProfile} className="max-w-xl space-y-6 p-6 rounded-2xl bg-[#0D1220]/90 border border-slate-800/70 backdrop-blur-md text-left">
           <div className="space-y-1">
-            <h3 className="text-base font-bold text-[#F4F2FA]">Personal Profile</h3>
-            <p className="text-xs text-[#777487]">Your identity across workspace approvals and audit logs.</p>
+            <h3 className="text-base font-bold text-[#F4F7FC]">Personal Profile</h3>
+            <p className="text-xs text-[#9AA7BC]">Your identity across workspace approvals and audit logs.</p>
           </div>
 
           <div className="space-y-4">
@@ -133,10 +133,10 @@ export const SettingsPage: React.FC = () => {
 
       {/* Workspace Tab */}
       {activeTab === 'workspace' && (
-        <form onSubmit={handleSaveProfile} className="max-w-xl space-y-6 p-6 rounded-2xl bg-[#111118] border border-[#292936] text-left">
+        <form onSubmit={handleSaveProfile} className="max-w-xl space-y-6 p-6 rounded-2xl bg-[#0D1220]/90 border border-slate-800/70 backdrop-blur-md text-left">
           <div className="space-y-1">
-            <h3 className="text-base font-bold text-[#F4F2FA]">Workspace Settings</h3>
-            <p className="text-xs text-[#777487]">Organization name, isolation tier, and member policies.</p>
+            <h3 className="text-base font-bold text-[#F4F7FC]">Workspace Settings</h3>
+            <p className="text-xs text-[#9AA7BC]">Organization name, isolation tier, and member policies.</p>
           </div>
 
           <div className="space-y-4">
@@ -146,14 +146,14 @@ export const SettingsPage: React.FC = () => {
               onChange={(e) => setWorkspaceName(e.target.value)}
               required
             />
-            <div className="p-3.5 rounded-xl bg-[#09090D] border border-[#292936] space-y-1 text-xs">
-              <span className="text-[#777487] block text-[11px]">Active Plan:</span>
-              <span className="text-[#A78BFA] font-semibold block">Team Pilot · Bounded Execution</span>
-              <span className="text-[#A5A2B4] text-[11px] block mt-1">Multi-seat approval workflow active.</span>
+            <div className="p-3.5 rounded-xl bg-[#111827] border border-slate-800 space-y-1 text-xs">
+              <span className="text-[#64748B] block text-[11px] font-mono">ACTIVE TIER</span>
+              <span className="text-[#38D9FF] font-semibold block text-sm">Enterprise Pilot · Bounded Fleet</span>
+              <span className="text-[#9AA7BC] text-[11px] block mt-1">Multi-seat cryptographic approval workflow active.</span>
             </div>
           </div>
 
-          <div className="pt-4 border-t border-[#292936] flex items-center justify-between">
+          <div className="pt-4 border-t border-slate-800/70 flex items-center justify-between">
             <Button
               variant="outline"
               size="xs"
@@ -171,25 +171,25 @@ export const SettingsPage: React.FC = () => {
 
       {/* Appearance Tab */}
       {activeTab === 'appearance' && (
-        <div className="max-w-xl space-y-6 p-6 rounded-2xl bg-[#111118] border border-[#292936] text-left">
+        <div className="max-w-xl space-y-6 p-6 rounded-2xl bg-[#0D1220]/90 border border-slate-800/70 backdrop-blur-md text-left">
           <div className="space-y-1">
-            <h3 className="text-base font-bold text-[#F4F2FA]">Appearance & Theme</h3>
-            <p className="text-xs text-[#777487]">Curated palette crafted for high focus and zero visual fatigue.</p>
+            <h3 className="text-base font-bold text-[#F4F7FC]">Appearance & Theme</h3>
+            <p className="text-xs text-[#9AA7BC]">Curated futuristic palette crafted for high focus and zero visual fatigue.</p>
           </div>
 
           <div className="space-y-3">
-            <div className="p-3.5 rounded-xl bg-[#09090D] border border-[#A78BFA] flex items-center justify-between">
+            <div className="p-3.5 rounded-xl bg-[#111827] border border-[#38D9FF] flex items-center justify-between shadow-[0_0_12px_rgba(56,217,255,0.15)]">
               <div>
-                <div className="text-xs font-semibold text-[#F4F2FA]">Obsidian Violet (Default)</div>
-                <div className="text-[11px] text-[#777487]">#09090D canvas with restrained #A78BFA accents</div>
+                <div className="text-xs font-semibold text-[#F4F7FC]">Cyber Midnight & Electric Cyan (Active)</div>
+                <div className="text-[11px] text-[#9AA7BC]">#080B16 canvas with #38D9FF cyan & #8B5CF6 violet accents</div>
               </div>
-              <CheckCircle2 size={16} className="text-[#A78BFA]" />
+              <CheckCircle2 size={16} className="text-[#38D9FF]" />
             </div>
 
-            <div className="p-3.5 rounded-xl bg-[#09090D] border border-[#292936] opacity-60 flex items-center justify-between">
+            <div className="p-3.5 rounded-xl bg-[#111827] border border-slate-800 opacity-60 flex items-center justify-between">
               <div>
-                <div className="text-xs font-semibold text-[#F4F2FA]">High-Contrast Monochrome</div>
-                <div className="text-[11px] text-[#777487]">Zero tint contrast for terminal environments (Coming Soon)</div>
+                <div className="text-xs font-semibold text-[#F4F7FC]">High-Contrast Monochrome</div>
+                <div className="text-[11px] text-[#64748B]">Zero tint contrast for terminal environments (Coming Soon)</div>
               </div>
             </div>
           </div>
@@ -198,49 +198,49 @@ export const SettingsPage: React.FC = () => {
 
       {/* Notifications Tab */}
       {activeTab === 'notifications' && (
-        <div className="max-w-xl space-y-6 p-6 rounded-2xl bg-[#111118] border border-[#292936] text-left">
+        <div className="max-w-xl space-y-6 p-6 rounded-2xl bg-[#0D1220]/90 border border-slate-800/70 backdrop-blur-md text-left">
           <div className="space-y-1">
-            <h3 className="text-base font-bold text-[#F4F2FA]">Notification Preferences</h3>
-            <p className="text-xs text-[#777487]">Manage alert routing for pending approval barriers and errors.</p>
+            <h3 className="text-base font-bold text-[#F4F7FC]">Notification Preferences</h3>
+            <p className="text-xs text-[#9AA7BC]">Manage alert routing for pending approval barriers and errors.</p>
           </div>
 
           <div className="space-y-3">
-            <div className="p-3.5 rounded-xl bg-[#09090D] border border-[#292936] flex items-center justify-between">
+            <div className="p-3.5 rounded-xl bg-[#111827] border border-slate-800/80 flex items-center justify-between">
               <div>
-                <div className="text-xs font-semibold text-[#F4F2FA]">Pending Consequential Approval Alerts</div>
-                <div className="text-[11px] text-[#777487]">Instant notification when an agent halts for human review</div>
+                <div className="text-xs font-semibold text-[#F4F7FC]">Pending Consequential Approval Alerts</div>
+                <div className="text-[11px] text-[#9AA7BC]">Instant notification when an agent halts for human review</div>
               </div>
               <input
                 type="checkbox"
                 checked={notifyOnApproval}
                 onChange={(e) => setNotifyOnApproval(e.target.checked)}
-                className="w-4 h-4 accent-[#A78BFA] cursor-pointer"
+                className="w-4 h-4 accent-[#38D9FF] cursor-pointer"
               />
             </div>
 
-            <div className="p-3.5 rounded-xl bg-[#09090D] border border-[#292936] flex items-center justify-between">
+            <div className="p-3.5 rounded-xl bg-[#111827] border border-slate-800/80 flex items-center justify-between">
               <div>
-                <div className="text-xs font-semibold text-[#F4F2FA]">Execution Failure & Rate Limit Alerts</div>
-                <div className="text-[11px] text-[#777487]">Notify immediately when an external endpoint returns an error</div>
+                <div className="text-xs font-semibold text-[#F4F7FC]">Execution Failure & Rate Limit Alerts</div>
+                <div className="text-[11px] text-[#9AA7BC]">Notify immediately when an external endpoint returns an error</div>
               </div>
               <input
                 type="checkbox"
                 checked={notifyOnFailure}
                 onChange={(e) => setNotifyOnFailure(e.target.checked)}
-                className="w-4 h-4 accent-[#A78BFA] cursor-pointer"
+                className="w-4 h-4 accent-[#38D9FF] cursor-pointer"
               />
             </div>
 
-            <div className="p-3.5 rounded-xl bg-[#09090D] border border-[#292936] flex items-center justify-between">
+            <div className="p-3.5 rounded-xl bg-[#111827] border border-slate-800/80 flex items-center justify-between">
               <div>
-                <div className="text-xs font-semibold text-[#F4F2FA]">Weekly Intelligence Summary Email</div>
-                <div className="text-[11px] text-[#777487]">Consolidated activity report every Monday morning</div>
+                <div className="text-xs font-semibold text-[#F4F7FC]">Weekly Intelligence Summary Email</div>
+                <div className="text-[11px] text-[#9AA7BC]">Consolidated activity report every Monday morning</div>
               </div>
               <input
                 type="checkbox"
                 checked={notifyWeeklyDigest}
                 onChange={(e) => setNotifyWeeklyDigest(e.target.checked)}
-                className="w-4 h-4 accent-[#A78BFA] cursor-pointer"
+                className="w-4 h-4 accent-[#38D9FF] cursor-pointer"
               />
             </div>
           </div>
@@ -249,28 +249,28 @@ export const SettingsPage: React.FC = () => {
 
       {/* Security & Auth Tab */}
       {activeTab === 'security' && (
-        <div className="max-w-xl space-y-6 p-6 rounded-2xl bg-[#111118] border border-[#292936] text-left">
+        <div className="max-w-xl space-y-6 p-6 rounded-2xl bg-[#0D1220]/90 border border-slate-800/70 backdrop-blur-md text-left">
           <div className="space-y-1">
-            <h3 className="text-base font-bold text-[#F4F2FA]">Security & Access Governance</h3>
-            <p className="text-xs text-[#777487]">Mandatory 2FA, session timeout, and cryptographic trace policies.</p>
+            <h3 className="text-base font-bold text-[#F4F7FC]">Security & Access Governance</h3>
+            <p className="text-xs text-[#9AA7BC]">Mandatory 2FA, session timeout, and cryptographic trace policies.</p>
           </div>
 
           <div className="space-y-4">
-            <div className="p-3.5 rounded-xl bg-[#09090D] border border-[#292936] flex items-center justify-between">
+            <div className="p-3.5 rounded-xl bg-[#111827] border border-slate-800/80 flex items-center justify-between">
               <div>
-                <div className="text-xs font-semibold text-[#F4F2FA]">Two-Factor Authentication (TOTP)</div>
-                <div className="text-[11px] text-[#65D6A3]">Enforced for all workspace operators</div>
+                <div className="text-xs font-semibold text-[#F4F7FC]">Two-Factor Authentication (TOTP)</div>
+                <div className="text-[11px] text-[#34D399]">Enforced for all workspace operators</div>
               </div>
-              <span className="text-xs font-mono text-[#65D6A3] bg-[#65D6A3]/10 px-2 py-0.5 rounded">Active</span>
+              <span className="text-xs font-mono text-[#34D399] bg-[#34D399]/10 px-2 py-0.5 rounded-full">Active</span>
             </div>
 
-            <div className="p-3.5 rounded-xl bg-[#09090D] border border-[#292936] space-y-2">
-              <div className="text-xs font-semibold text-[#F4F2FA]">Cryptographic Audit Log Retention</div>
-              <div className="text-[11px] text-[#777487]">Trace records are signed and retained in immutable storage.</div>
+            <div className="p-3.5 rounded-xl bg-[#111827] border border-slate-800/80 space-y-2">
+              <div className="text-xs font-semibold text-[#F4F7FC]">Cryptographic Audit Log Retention</div>
+              <div className="text-[11px] text-[#9AA7BC]">Trace records are signed and retained in immutable storage.</div>
               <select
                 value={auditLogRetentionDays}
                 onChange={(e) => setAuditLogRetentionDays(e.target.value)}
-                className="w-full bg-[#171720] text-[#F4F2FA] text-xs rounded-lg border border-[#292936] p-2 mt-2 cursor-pointer"
+                className="w-full bg-[#080B16] text-[#F4F7FC] text-xs rounded-lg border border-slate-700/60 p-2 mt-2 cursor-pointer focus:border-[#38D9FF]"
               >
                 <option value="30">30 Days (Standard Team)</option>
                 <option value="90">90 Days (Enterprise Compliance)</option>
@@ -283,40 +283,40 @@ export const SettingsPage: React.FC = () => {
 
       {/* Usage & Limits Tab */}
       {activeTab === 'usage' && (
-        <div className="max-w-xl space-y-6 p-6 rounded-2xl bg-[#111118] border border-[#292936] text-left">
+        <div className="max-w-xl space-y-6 p-6 rounded-2xl bg-[#0D1220]/90 border border-slate-800/70 backdrop-blur-md text-left">
           <div className="space-y-1">
-            <h3 className="text-base font-bold text-[#F4F2FA]">Usage & Operational Ceilings</h3>
-            <p className="text-xs text-[#777487]">Deterministic limits ensure predictable workloads and bounded costs.</p>
+            <h3 className="text-base font-bold text-[#F4F7FC]">Usage & Operational Ceilings</h3>
+            <p className="text-xs text-[#9AA7BC]">Deterministic limits ensure predictable workloads and bounded costs.</p>
           </div>
 
           <div className="space-y-4 text-xs">
-            <div className="p-4 rounded-xl bg-[#09090D] border border-[#292936] space-y-2">
+            <div className="p-4 rounded-xl bg-[#111827] border border-slate-800 space-y-2">
               <div className="flex justify-between font-medium">
-                <span className="text-[#F4F2FA]">Active Specialist Agents</span>
-                <span className="font-mono text-[#A78BFA]">4 / 15 configured</span>
+                <span className="text-[#F4F7FC]">Active Specialist Agents</span>
+                <span className="font-mono text-[#38D9FF]">4 / 15 configured</span>
               </div>
-              <div className="w-full h-1.5 rounded-full bg-[#171720] overflow-hidden">
-                <div className="w-[26%] h-full bg-[#A78BFA] rounded-full" />
+              <div className="w-full h-1.5 rounded-full bg-[#080B16] overflow-hidden">
+                <div className="w-[26%] h-full bg-[#38D9FF] rounded-full" />
               </div>
             </div>
 
-            <div className="p-4 rounded-xl bg-[#09090D] border border-[#292936] space-y-2">
+            <div className="p-4 rounded-xl bg-[#111827] border border-slate-800 space-y-2">
               <div className="flex justify-between font-medium">
-                <span className="text-[#F4F2FA]">Scheduled Trigger Invocations</span>
-                <span className="font-mono text-[#65D6A3]">128 / 5,000 monthly</span>
+                <span className="text-[#F4F7FC]">Scheduled Trigger Invocations</span>
+                <span className="font-mono text-[#34D399]">128 / 5,000 monthly</span>
               </div>
-              <div className="w-full h-1.5 rounded-full bg-[#171720] overflow-hidden">
-                <div className="w-[3%] h-full bg-[#65D6A3] rounded-full" />
+              <div className="w-full h-1.5 rounded-full bg-[#080B16] overflow-hidden">
+                <div className="w-[3%] h-full bg-[#34D399] rounded-full" />
               </div>
             </div>
 
-            <div className="p-4 rounded-xl bg-[#09090D] border border-[#292936] space-y-2">
+            <div className="p-4 rounded-xl bg-[#111827] border border-slate-800 space-y-2">
               <div className="flex justify-between font-medium">
-                <span className="text-[#F4F2FA]">Ingested Knowledge Volume</span>
-                <span className="font-mono text-[#F4F2FA]">1.8 MB / 50 MB</span>
+                <span className="text-[#F4F7FC]">Ingested Knowledge Volume</span>
+                <span className="font-mono text-[#F4F7FC]">1.8 MB / 50 MB</span>
               </div>
-              <div className="w-full h-1.5 rounded-full bg-[#171720] overflow-hidden">
-                <div className="w-[4%] h-full bg-[#A78BFA] rounded-full" />
+              <div className="w-full h-1.5 rounded-full bg-[#080B16] overflow-hidden">
+                <div className="w-[4%] h-full bg-[#8B5CF6] rounded-full" />
               </div>
             </div>
           </div>

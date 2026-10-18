@@ -1,21 +1,35 @@
 export const tokens = {
   colors: {
-    bgMain: '#09090D',
-    bgSidebar: '#0D0D13',
-    bgSurfaceSecondary: '#111118',
-    bgSurfaceElevated: '#171720',
-    border: '#292936',
-    borderHover: '#3D3D4E',
-    borderActive: '#A78BFA',
-    textPrimary: '#F4F2FA',
-    textSecondary: '#A5A2B4',
-    textMuted: '#777487',
-    accent: '#A78BFA',
-    accentHighlight: '#C4B5FD',
-    accentSubtle: 'rgba(167, 139, 250, 0.12)',
-    success: '#65D6A3',
-    warning: '#F2C879',
-    error: '#F07885',
+    // Canvas & Surfaces
+    bgMain: '#080B16',
+    bgSidebar: '#0D1220',
+    bgSurfaceSecondary: '#111827',
+    bgSurfaceElevated: '#151D2E',
+    bgSurfaceRaised: '#1A2438',
+    
+    // Borders
+    border: 'rgba(148, 163, 184, 0.14)',
+    borderHover: 'rgba(56, 217, 255, 0.35)',
+    borderActive: '#38D9FF',
+    borderMuted: 'rgba(148, 163, 184, 0.08)',
+    
+    // Typography
+    textPrimary: '#F4F7FC',
+    textSecondary: '#9AA7BC',
+    textMuted: '#64748B',
+    
+    // Brand Accents
+    primaryAccent: '#38D9FF', // Electric Cyan
+    secondaryAccent: '#8B5CF6', // Vibrant Violet
+    accent: '#38D9FF',
+    accentHighlight: '#80E5FF',
+    accentSubtle: 'rgba(56, 217, 255, 0.12)',
+    accentVioletSubtle: 'rgba(139, 92, 246, 0.12)',
+    
+    // Status Tiers
+    success: '#34D399',
+    warning: '#FBBF24',
+    error: '#FB7185',
   },
   spacing: {
     xs: '4px',
@@ -36,5 +50,12 @@ export const tokens = {
     fontSans: "'Plus Jakarta Sans', system-ui, -apple-system, sans-serif",
     fontMono: "'JetBrains Mono', monospace",
   },
-  transition: 'all 150ms cubic-bezier(0.16, 1, 0.3, 1)',
+  motion: {
+    durationFast: '150ms',
+    durationNormal: '240ms',
+    durationSlow: '360ms',
+    easeOut: 'cubic-bezier(0.16, 1, 0.3, 1)',
+    easeStandard: 'cubic-bezier(0.2, 0, 0, 1)',
+  },
+  transition: 'all 200ms cubic-bezier(0.16, 1, 0.3, 1)',
 };

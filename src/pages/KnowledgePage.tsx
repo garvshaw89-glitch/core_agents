@@ -137,7 +137,7 @@ export const KnowledgePage: React.FC = () => {
           <select
             value={typeFilter}
             onChange={(e) => setTypeFilter(e.target.value)}
-            className="w-full bg-[#111118] text-[#F4F2FA] text-xs rounded-xl border border-[#292936] px-3 py-2 focus:outline-none focus:border-[#A78BFA] cursor-pointer"
+            className="w-full bg-[#111827] text-[#F4F7FC] text-xs rounded-xl border border-slate-700/60 px-3 py-2 focus:outline-none focus:border-[#38D9FF] focus:ring-1 focus:ring-[#38D9FF] cursor-pointer"
           >
             <option value="all">All Types</option>
             <option value="document">Documents</option>
@@ -173,10 +173,10 @@ export const KnowledgePage: React.FC = () => {
           {filteredItems.map((item) => (
             <div
               key={item.id}
-              className="p-4 rounded-xl bg-[#111118] border border-[#292936] hover:border-[#3D3D4E] transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-4 text-left"
+              className="p-4 rounded-xl bg-[#0D1220]/90 border border-slate-800/70 hover:border-[#38D9FF]/40 hover:bg-[#111827] transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-4 text-left group"
             >
               <div className="flex items-center gap-3.5 min-w-0">
-                <div className="w-10 h-10 rounded-xl bg-[#171720] border border-[#292936] text-[#A78BFA] flex items-center justify-center shrink-0">
+                <div className="w-10 h-10 rounded-xl bg-[#151D2E] border border-slate-700/60 text-[#38D9FF] flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
                   {item.type === 'document' ? (
                     <FileText size={18} />
                   ) : item.type === 'source' ? (
@@ -188,14 +188,14 @@ export const KnowledgePage: React.FC = () => {
 
                 <div className="min-w-0">
                   <div className="flex items-center gap-2">
-                    <h3 className="text-sm font-semibold text-[#F4F2FA] truncate">{item.name}</h3>
+                    <h3 className="text-sm font-semibold text-[#F4F7FC] truncate group-hover:text-white">{item.name}</h3>
                     <StatusBadge status={item.status} size="sm" />
                   </div>
-                  <div className="flex items-center gap-3 text-xs text-[#777487] mt-0.5">
+                  <div className="flex items-center gap-3 text-xs text-[#64748B] mt-0.5">
                     <span>{formatFileSize(item.sizeBytes)}</span>
                     {item.tokensCount && <span>· ~{item.tokensCount.toLocaleString()} tokens</span>}
                     {item.sourceUrl && (
-                      <span className="truncate max-w-xs font-mono text-[11px] text-[#A5A2B4]">
+                      <span className="truncate max-w-xs font-mono text-[11px] text-[#9AA7BC]">
                         · {item.sourceUrl}
                       </span>
                     )}
@@ -203,8 +203,8 @@ export const KnowledgePage: React.FC = () => {
                 </div>
               </div>
 
-              <div className="flex items-center justify-between sm:justify-end gap-3 shrink-0 pt-2 sm:pt-0 border-t sm:border-t-0 border-[#292936]/60">
-                <span className="text-[11px] text-[#777487] font-mono">
+              <div className="flex items-center justify-between sm:justify-end gap-3 shrink-0 pt-2 sm:pt-0 border-t sm:border-t-0 border-slate-800/60">
+                <span className="text-[11px] text-[#64748B] font-mono">
                   {new Date(item.updatedAt).toLocaleDateString([], {
                     month: 'short',
                     day: 'numeric',
@@ -215,6 +215,7 @@ export const KnowledgePage: React.FC = () => {
                   size="xs"
                   leftIcon={<Trash2 size={12} />}
                   onClick={() => setItemToDelete(item)}
+                  className="hover:text-[#FB7185] hover:border-[#FB7185]/40"
                 >
                   Delete
                 </Button>
