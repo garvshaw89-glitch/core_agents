@@ -167,19 +167,19 @@ export const IntegrationsPage: React.FC = () => {
         description="Review the permission scopes and authorize bounded agent access."
       >
         <div className="space-y-4 pt-2">
-          <div className="p-3.5 rounded-xl bg-[#09090D] border border-[#292936] space-y-2 text-xs">
-            <div className="text-xs font-semibold text-[#F4F2FA]">Requested Least-Privilege Scopes:</div>
-            <ul className="space-y-1 text-[#A5A2B4]">
+          <div className="p-3.5 rounded-xl bg-[#111827] border border-slate-700/60 space-y-2 text-xs">
+            <div className="text-xs font-semibold text-[#F4F7FC]">Requested Least-Privilege Scopes:</div>
+            <ul className="space-y-1 text-[#9AA7BC]">
               {configuringIntegration?.scopes.map((scope) => (
                 <li key={scope} className="font-mono text-[11px] flex items-center gap-1.5">
-                  <Check size={12} className="text-[#65D6A3]" />
+                  <Check size={12} className="text-[#34D399]" />
                   <span>{scope}</span>
                 </li>
               ))}
             </ul>
           </div>
 
-          <p className="text-xs text-[#777487] leading-relaxed">
+          <p className="text-xs text-[#64748B] leading-relaxed">
             By connecting this provider, agents granted explicit tool entitlements will be allowed to invoke
             authorized endpoints within these bounded permissions.
           </p>

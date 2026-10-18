@@ -234,18 +234,18 @@ export const KnowledgePage: React.FC = () => {
       >
         <form onSubmit={handleUploadSubmit} className="space-y-4 pt-2">
           <div className="space-y-1.5">
-            <label className="block text-xs font-medium text-[#A5A2B4]">Source Category</label>
+            <label className="block text-xs font-medium text-[#9AA7BC]">Source Category</label>
             <div className="grid grid-cols-3 gap-2">
               <button
                 type="button"
                 onClick={() => setUploadType('document')}
                 className={`p-2.5 rounded-xl border text-left text-xs transition-colors cursor-pointer ${
                   uploadType === 'document'
-                    ? 'bg-[#171720] border-[#A78BFA] text-[#F4F2FA]'
-                    : 'bg-[#09090D] border-[#292936] text-[#777487]'
+                    ? 'bg-[#151D2E] border-[#38D9FF] text-[#F4F7FC]'
+                    : 'bg-[#111827] border-slate-700/60 text-[#64748B]'
                 }`}
               >
-                <FileText size={14} className="mb-1 text-[#A78BFA]" />
+                <FileText size={14} className="mb-1 text-[#38D9FF]" />
                 <div className="font-semibold">Document</div>
                 <div className="text-[10px]">PDF, Markdown</div>
               </button>
@@ -254,11 +254,11 @@ export const KnowledgePage: React.FC = () => {
                 onClick={() => setUploadType('source')}
                 className={`p-2.5 rounded-xl border text-left text-xs transition-colors cursor-pointer ${
                   uploadType === 'source'
-                    ? 'bg-[#171720] border-[#A78BFA] text-[#F4F2FA]'
-                    : 'bg-[#09090D] border-[#292936] text-[#777487]'
+                    ? 'bg-[#151D2E] border-[#38D9FF] text-[#F4F7FC]'
+                    : 'bg-[#111827] border-slate-700/60 text-[#64748B]'
                 }`}
               >
-                <Link size={14} className="mb-1 text-[#65D6A3]" />
+                <Link size={14} className="mb-1 text-[#34D399]" />
                 <div className="font-semibold">Public URL</div>
                 <div className="text-[10px]">Changelog, Feed</div>
               </button>
@@ -267,11 +267,11 @@ export const KnowledgePage: React.FC = () => {
                 onClick={() => setUploadType('note')}
                 className={`p-2.5 rounded-xl border text-left text-xs transition-colors cursor-pointer ${
                   uploadType === 'note'
-                    ? 'bg-[#171720] border-[#A78BFA] text-[#F4F2FA]'
-                    : 'bg-[#09090D] border-[#292936] text-[#777487]'
+                    ? 'bg-[#151D2E] border-[#38D9FF] text-[#F4F7FC]'
+                    : 'bg-[#111827] border-slate-700/60 text-[#64748B]'
                 }`}
               >
-                <FileCode size={14} className="mb-1 text-[#F2C879]" />
+                <FileCode size={14} className="mb-1 text-[#FBBF24]" />
                 <div className="font-semibold">Project Note</div>
                 <div className="text-[10px]">Instructions</div>
               </button>
@@ -296,8 +296,8 @@ export const KnowledgePage: React.FC = () => {
             />
           )}
 
-          <div className="p-3 bg-[#09090D] rounded-xl border border-[#292936] text-[11px] text-[#777487] flex items-center gap-2">
-            <CheckCircle2 size={13} className="text-[#65D6A3]" />
+          <div className="p-3 bg-[#111827] rounded-xl border border-slate-700/60 text-[11px] text-[#9AA7BC] flex items-center gap-2">
+            <CheckCircle2 size={13} className="text-[#34D399]" />
             <span>Parsed locally and assigned token chunks prior to indexing.</span>
           </div>
 

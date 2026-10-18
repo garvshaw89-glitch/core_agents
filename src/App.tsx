@@ -65,6 +65,11 @@ export default function App() {
   const [isAppCreateOpen, setIsAppCreateOpen] = useState(false);
   const [initialPromptForCreate, setInitialPromptForCreate] = useState<string | undefined>(undefined);
 
+  // Filter states passed between pages (e.g. from Overview MetricCards)
+  const [agentsInitialFilter, setAgentsInitialFilter] = useState<{ status?: string; category?: string; query?: string } | undefined>(undefined);
+  const [workflowsInitialFilter, setWorkflowsInitialFilter] = useState<{ status?: string } | undefined>(undefined);
+  const [activityInitialFilter, setActivityInitialFilter] = useState<{ status?: string } | undefined>(undefined);
+
   // Sync with browser URL hash for deep linking and back/forward navigation
   useEffect(() => {
     const handleHashChange = () => {
@@ -222,9 +227,18 @@ export default function App() {
               onExploreTemplates={() => navigateAppPage('templates')}
               onOpenAgent={(agent) => setInspectedAgent(agent)}
               onOpenActivity={(act) => setInspectedActivity(act)}
-              onNavigateToAgents={() => navigateAppPage('agents')}
-              onNavigateToWorkflows={() => navigateAppPage('workflows')}
-              onNavigateToActivity={() => navigateAppPage('activity')}
+              onNavigateToAgents={(filter) => {
+                setAgentsInitialFilter(filter);
+                navigateAppPage('agents');
+              }}
+              onNavigateToWorkflows={(filter) => {
+                setWorkflowsInitialFilter(filter);
+                navigateAppPage('workflows');
+              }}
+              onNavigateToActivity={(filter) => {
+                setActivityInitialFilter(filter);
+                navigateAppPage('activity');
+              }}
             />
           )}
 
@@ -234,6 +248,9 @@ export default function App() {
               onEditAgentInBuilder={(agent) => navigateToBuilder(agent.id)}
               onOpenAgent={(agent) => setInspectedAgent(agent)}
               onExploreTemplates={() => navigateAppPage('templates')}
+              initialStatusFilter={agentsInitialFilter?.status}
+              initialCategoryFilter={agentsInitialFilter?.category}
+              initialSearchQuery={agentsInitialFilter?.query}
             />
           )}
 
@@ -258,11 +275,15 @@ export default function App() {
           {activeAppPage === 'workflows' && (
             <WorkflowsPage
               onCreateAgent={() => navigateToBuilder('new')}
+              initialStatusFilter={workflowsInitialFilter?.status}
             />
           )}
 
           {activeAppPage === 'activity' && (
-            <ActivityPage onNavigateToAgents={() => navigateAppPage('agents')} />
+            <ActivityPage
+              onNavigateToAgents={() => navigateAppPage('agents')}
+              initialStatusFilter={activityInitialFilter?.status}
+            />
           )}
 
           {activeAppPage === 'knowledge' && <KnowledgePage />}

@@ -17,6 +17,9 @@ interface MyAgentsPageProps {
   onEditAgentInBuilder?: (agent: Agent) => void;
   onExploreTemplates: () => void;
   onViewTemplate?: (templateId: string) => void;
+  initialStatusFilter?: string;
+  initialCategoryFilter?: string;
+  initialSearchQuery?: string;
 }
 
 export const MyAgentsPage: React.FC<MyAgentsPageProps> = ({
@@ -25,12 +28,15 @@ export const MyAgentsPage: React.FC<MyAgentsPageProps> = ({
   onEditAgentInBuilder,
   onExploreTemplates,
   onViewTemplate,
+  initialStatusFilter,
+  initialCategoryFilter,
+  initialSearchQuery,
 }) => {
   const { showToast } = useToast();
   const [agents, setAgents] = useState<Agent[]>([]);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [statusFilter, setStatusFilter] = useState<string>('all');
-  const [categoryFilter, setCategoryFilter] = useState<string>('all');
+  const [searchQuery, setSearchQuery] = useState(initialSearchQuery || '');
+  const [statusFilter, setStatusFilter] = useState<string>(initialStatusFilter || 'all');
+  const [categoryFilter, setCategoryFilter] = useState<string>(initialCategoryFilter || 'all');
   const [sortBy, setSortBy] = useState<string>('recently_updated');
   const [layout, setLayout] = useState<'grid' | 'list'>('grid');
   const [agentToArchive, setAgentToArchive] = useState<Agent | null>(null);
@@ -42,6 +48,25 @@ export const MyAgentsPage: React.FC<MyAgentsPageProps> = ({
   useEffect(() => {
     loadAgents();
   }, []);
+
+  // Synchronize when initial filter props update (e.g. from Overview metric cards)
+  useEffect(() => {
+    if (initialStatusFilter !== undefined) {
+      setStatusFilter(initialStatusFilter);
+    }
+  }, [initialStatusFilter]);
+
+  useEffect(() => {
+    if (initialCategoryFilter !== undefined) {
+      setCategoryFilter(initialCategoryFilter);
+    }
+  }, [initialCategoryFilter]);
+
+  useEffect(() => {
+    if (initialSearchQuery !== undefined) {
+      setSearchQuery(initialSearchQuery);
+    }
+  }, [initialSearchQuery]);
 
   const filteredAgents = useMemo(() => {
     return agents

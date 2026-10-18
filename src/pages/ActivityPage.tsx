@@ -11,13 +11,14 @@ import { History, Filter, RefreshCw, Bot } from 'lucide-react';
 
 interface ActivityPageProps {
   onNavigateToAgents: () => void;
+  initialStatusFilter?: string;
 }
 
-export const ActivityPage: React.FC<ActivityPageProps> = ({ onNavigateToAgents }) => {
+export const ActivityPage: React.FC<ActivityPageProps> = ({ onNavigateToAgents, initialStatusFilter }) => {
   const { showToast } = useToast();
   const [activities, setActivities] = useState<ActivityRecord[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
-  const [statusFilter, setStatusFilter] = useState('all');
+  const [statusFilter, setStatusFilter] = useState(initialStatusFilter || 'all');
   const [selectedActivity, setSelectedActivity] = useState<ActivityRecord | null>(null);
 
   const loadActivities = () => {
@@ -27,6 +28,12 @@ export const ActivityPage: React.FC<ActivityPageProps> = ({ onNavigateToAgents }
   useEffect(() => {
     loadActivities();
   }, []);
+
+  useEffect(() => {
+    if (initialStatusFilter !== undefined) {
+      setStatusFilter(initialStatusFilter);
+    }
+  }, [initialStatusFilter]);
 
   const handleApprove = (id: string) => {
     const updated = appStateService.approveActivity(id);

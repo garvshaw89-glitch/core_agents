@@ -5,6 +5,7 @@ import { AgentCard } from '../design-system/AgentCard';
 import { ActivityItem } from '../design-system/ActivityItem';
 import { EmptyState } from '../design-system/EmptyState';
 import { WorkflowRoutingMap } from '../components/app/WorkflowRoutingMap';
+import { MetricCard } from '../design-system/MetricCard';
 import { appStateService } from '../services/appStateService';
 import { Agent, ActivityRecord } from '../types/app';
 import {
@@ -21,6 +22,7 @@ import {
   TrendingUp,
   ShieldCheck,
   Zap,
+  AlertTriangle,
 } from 'lucide-react';
 
 interface OverviewPageProps {
@@ -28,9 +30,9 @@ interface OverviewPageProps {
   onExploreTemplates: () => void;
   onOpenAgent: (agent: Agent) => void;
   onOpenActivity: (activity: ActivityRecord) => void;
-  onNavigateToAgents: () => void;
-  onNavigateToWorkflows: () => void;
-  onNavigateToActivity: () => void;
+  onNavigateToAgents: (filter?: { status?: string; category?: string; query?: string }) => void;
+  onNavigateToWorkflows: (filter?: { status?: string }) => void;
+  onNavigateToActivity: (filter?: { status?: string }) => void;
 }
 
 export const OverviewPage: React.FC<OverviewPageProps> = ({
@@ -83,6 +85,7 @@ export const OverviewPage: React.FC<OverviewPageProps> = ({
   };
 
   const activeAgentsCount = agents.filter((a) => a.status === 'active').length;
+  const needsAttentionCount = agents.filter((a) => a.status === 'needs_attention').length;
   const pendingApprovals = activities.filter((a) => a.status === 'awaiting_approval').length;
 
   return (
@@ -120,105 +123,67 @@ export const OverviewPage: React.FC<OverviewPageProps> = ({
         }
       />
 
-      {/* Summary KPI Metrics Section - High-End Command Center Cards */}
+      {/* Summary KPI Metrics Section - Refactored to dedicated semantic MetricCard components */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Metric 1: Total Agents */}
-        <div
-          onClick={onNavigateToAgents}
-          className="p-4 rounded-2xl bg-[#0D1220]/90 border border-slate-800/70 hover:border-[#38D9FF]/40 hover:bg-[#111827] transition-all duration-200 cursor-pointer group"
-        >
-          <div className="flex items-center justify-between text-xs text-[#9AA7BC] mb-2.5">
-            <span className="font-medium">Total Agents</span>
-            <div className="w-7 h-7 rounded-lg bg-[#38D9FF]/15 text-[#38D9FF] flex items-center justify-center">
-              <Bot size={15} />
-            </div>
-          </div>
-          <div className="flex items-baseline justify-between">
-            <div className="text-2xl sm:text-3xl font-bold text-[#F4F7FC] font-mono tabular-nums">
-              {agents.length}
-            </div>
-            <div className="flex items-center gap-1 text-[11px] font-mono text-[#34D399] bg-[#34D399]/10 px-2 py-0.5 rounded-full">
-              <TrendingUp size={11} />
-              <span>+18.2%</span>
-            </div>
-          </div>
-          <div className="text-[11px] text-[#64748B] mt-2">Specialists configured in fleet</div>
-        </div>
+        <MetricCard
+          label="Total Agents"
+          value={agents.length}
+          status={agents.length > 0 ? 'active' : 'default'}
+          icon={<Bot size={15} />}
+          trend={{ value: '+18.2%', positive: true }}
+          subtext="Specialists configured in fleet"
+          filterNotice="All agents"
+          onClick={() => onNavigateToAgents({ status: 'all' })}
+          ariaLabel={`Total Agents: ${agents.length}. Click to view all agents.`}
+        />
 
-        {/* Metric 2: Active & Healthy */}
-        <div
-          onClick={onNavigateToAgents}
-          className="p-4 rounded-2xl bg-[#0D1220]/90 border border-slate-800/70 hover:border-[#34D399]/40 hover:bg-[#111827] transition-all duration-200 cursor-pointer group"
-        >
-          <div className="flex items-center justify-between text-xs text-[#9AA7BC] mb-2.5">
-            <span className="font-medium">Workflow Health</span>
-            <div className="w-7 h-7 rounded-lg bg-[#34D399]/15 text-[#34D399] flex items-center justify-center">
-              <CheckCircle2 size={15} />
-            </div>
-          </div>
-          <div className="flex items-baseline justify-between">
-            <div className="text-2xl sm:text-3xl font-bold text-[#F4F7FC] font-mono tabular-nums">
-              98.6%
-            </div>
-            <div className="flex items-center gap-1 text-[11px] font-mono text-[#34D399] bg-[#34D399]/10 px-2 py-0.5 rounded-full">
-              <TrendingUp size={11} />
-              <span>+2.1%</span>
-            </div>
-          </div>
-          <div className="text-[11px] text-[#64748B] mt-2">
-            {activeAgentsCount} active · 0 SLA violations
-          </div>
-        </div>
+        {/* Metric 2: Active Agents / Workflow Health */}
+        <MetricCard
+          label="Active Specialists"
+          value={activeAgentsCount}
+          status="success"
+          icon={<CheckCircle2 size={15} />}
+          trend={{ value: '98.6% SLA', positive: true }}
+          subtext={`${activeAgentsCount} active · 0 SLA violations`}
+          filterNotice="Filter active"
+          onClick={() => onNavigateToAgents({ status: 'active' })}
+          ariaLabel={`Active Specialists: ${activeAgentsCount}. Click to filter active agents.`}
+        />
 
         {/* Metric 3: Multi-Stage Pipelines */}
-        <div
-          onClick={onNavigateToWorkflows}
-          className="p-4 rounded-2xl bg-[#0D1220]/90 border border-slate-800/70 hover:border-[#8B5CF6]/40 hover:bg-[#111827] transition-all duration-200 cursor-pointer group"
-        >
-          <div className="flex items-center justify-between text-xs text-[#9AA7BC] mb-2.5">
-            <span className="font-medium">Active Pipelines</span>
-            <div className="w-7 h-7 rounded-lg bg-[#8B5CF6]/15 text-[#8B5CF6] flex items-center justify-center">
-              <GitFork size={15} />
-            </div>
-          </div>
-          <div className="flex items-baseline justify-between">
-            <div className="text-2xl sm:text-3xl font-bold text-[#F4F7FC] font-mono tabular-nums">
-              {workflowsCount}
-            </div>
-            <div className="text-[11px] font-mono text-[#38D9FF] bg-[#38D9FF]/10 px-2 py-0.5 rounded-full">
-              Live
-            </div>
-          </div>
-          <div className="text-[11px] text-[#64748B] mt-2">Deterministic orchestration chains</div>
-        </div>
+        <MetricCard
+          label="Active Pipelines"
+          value={workflowsCount}
+          status="info"
+          icon={<GitFork size={15} />}
+          trend={{ value: 'Live', positive: true }}
+          subtext="Deterministic orchestration chains"
+          filterNotice="Filter workflows"
+          onClick={() => onNavigateToWorkflows({ status: 'active' })}
+          ariaLabel={`Active Pipelines: ${workflowsCount}. Click to view workflows.`}
+        />
 
         {/* Metric 4: Trace Logs & Approvals */}
-        <div
-          onClick={onNavigateToActivity}
-          className="p-4 rounded-2xl bg-[#0D1220]/90 border border-slate-800/70 hover:border-[#FBBF24]/40 hover:bg-[#111827] transition-all duration-200 cursor-pointer group"
-        >
-          <div className="flex items-center justify-between text-xs text-[#9AA7BC] mb-2.5">
-            <span className="font-medium">Approval Rate</span>
-            <div className="w-7 h-7 rounded-lg bg-[#FBBF24]/15 text-[#FBBF24] flex items-center justify-center">
-              <ShieldCheck size={15} />
-            </div>
-          </div>
-          <div className="flex items-baseline justify-between">
-            <div className="text-2xl sm:text-3xl font-bold text-[#F4F7FC] font-mono tabular-nums">
-              94%
-            </div>
-            {pendingApprovals > 0 ? (
-              <div className="text-[11px] font-mono text-[#FBBF24] bg-[#FBBF24]/15 px-2 py-0.5 rounded-full font-bold">
-                {pendingApprovals} pending
-              </div>
-            ) : (
-              <div className="text-[11px] font-mono text-[#34D399] bg-[#34D399]/10 px-2 py-0.5 rounded-full">
-                All cleared
-              </div>
-            )}
-          </div>
-          <div className="text-[11px] text-[#64748B] mt-2">Human-in-the-loop governance</div>
-        </div>
+        <MetricCard
+          label="Approval Gate"
+          value={pendingApprovals > 0 ? `${pendingApprovals} Pending` : 'All Cleared'}
+          status={pendingApprovals > 0 ? 'warning' : 'success'}
+          icon={pendingApprovals > 0 ? <AlertTriangle size={15} /> : <ShieldCheck size={15} />}
+          trend={
+            pendingApprovals > 0
+              ? { value: 'Action Required', positive: false }
+              : { value: '99.8% Passed', positive: true }
+          }
+          subtext={
+            pendingApprovals > 0
+              ? `${pendingApprovals} action(s) awaiting sign-off`
+              : 'Zero blocked external executions'
+          }
+          filterNotice={pendingApprovals > 0 ? 'Review approvals' : 'View activity'}
+          onClick={() => onNavigateToActivity(pendingApprovals > 0 ? { status: 'awaiting_approval' } : undefined)}
+          ariaLabel={`Approval Gate: ${pendingApprovals > 0 ? `${pendingApprovals} Pending` : 'All Cleared'}. Click to inspect activity.`}
+        />
       </div>
 
       {/* Interactive Workflow Routing Matrix Map (Inspired by Reference Image 4) */}
@@ -285,7 +250,7 @@ export const OverviewPage: React.FC<OverviewPageProps> = ({
           {agents.length > 0 && (
             <button
               type="button"
-              onClick={onNavigateToAgents}
+              onClick={() => onNavigateToAgents()}
               className="text-xs text-[#38D9FF] hover:text-[#80E5FF] font-medium transition-colors cursor-pointer"
             >
               View all agents &rarr;
@@ -343,7 +308,7 @@ export const OverviewPage: React.FC<OverviewPageProps> = ({
           {activities.length > 0 && (
             <button
               type="button"
-              onClick={onNavigateToActivity}
+              onClick={() => onNavigateToActivity()}
               className="text-xs text-[#38D9FF] hover:text-[#80E5FF] font-medium transition-colors cursor-pointer"
             >
               View full activity trace &rarr;

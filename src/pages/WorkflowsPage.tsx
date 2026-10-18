@@ -25,14 +25,15 @@ import {
 
 interface WorkflowsPageProps {
   onCreateAgent: () => void;
+  initialStatusFilter?: string;
 }
 
-export const WorkflowsPage: React.FC<WorkflowsPageProps> = ({ onCreateAgent }) => {
+export const WorkflowsPage: React.FC<WorkflowsPageProps> = ({ onCreateAgent, initialStatusFilter }) => {
   const { showToast } = useToast();
   const [workflows, setWorkflows] = useState<Workflow[]>([]);
   const [agents, setAgents] = useState<Agent[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
-  const [statusFilter, setStatusFilter] = useState('all');
+  const [statusFilter, setStatusFilter] = useState(initialStatusFilter || 'all');
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [workflowToDelete, setWorkflowToDelete] = useState<Workflow | null>(null);
 
@@ -44,6 +45,12 @@ export const WorkflowsPage: React.FC<WorkflowsPageProps> = ({ onCreateAgent }) =
   useEffect(() => {
     loadData();
   }, []);
+
+  useEffect(() => {
+    if (initialStatusFilter !== undefined) {
+      setStatusFilter(initialStatusFilter);
+    }
+  }, [initialStatusFilter]);
 
   const filteredWorkflows = workflows.filter((w) => {
     const matchesSearch =
