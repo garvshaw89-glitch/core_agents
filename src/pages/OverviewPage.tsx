@@ -5,6 +5,7 @@ import { AgentCard } from '../design-system/AgentCard';
 import { ActivityItem } from '../design-system/ActivityItem';
 import { EmptyState } from '../design-system/EmptyState';
 import { WorkflowRoutingMap } from '../components/app/WorkflowRoutingMap';
+import { ActivityVolumeChart } from '../components/app/ActivityVolumeChart';
 import { MetricCard } from '../design-system/MetricCard';
 import { appStateService } from '../services/appStateService';
 import { Agent, ActivityRecord } from '../types/app';
@@ -188,6 +189,14 @@ export const OverviewPage: React.FC<OverviewPageProps> = ({
 
       {/* Interactive Workflow Routing Matrix Map (Inspired by Reference Image 4) */}
       <WorkflowRoutingMap />
+
+      {/* 30-Day Activity Volume & Peak Usage Visualization (Recharts) */}
+      <ActivityVolumeChart
+        activities={activities}
+        agents={agents}
+        isZeroState={isZeroMode}
+        onNavigateToActivity={onNavigateToActivity}
+      />
 
       {/* Welcome Objective Bar */}
       <div className="p-6 rounded-2xl bg-[#0D1220]/80 border border-slate-800/70 backdrop-blur-md shadow-lg">
