@@ -280,7 +280,17 @@ class AppStateService {
   // --- Activities ---
   getActivities(): ActivityRecord[] {
     if (this.isZeroStateMode) return [];
-    return this.getItem<ActivityRecord[]>('activities', INITIAL_ACTIVITIES);
+    const items = this.getItem<ActivityRecord[]>('activities', INITIAL_ACTIVITIES);
+    if (items.length < INITIAL_ACTIVITIES.length) {
+      const existingIds = new Set(items.map((i) => i.id));
+      const missing = INITIAL_ACTIVITIES.filter((i) => !existingIds.has(i.id));
+      if (missing.length > 0) {
+        const merged = [...missing, ...items];
+        this.setItem('activities', merged);
+        return merged;
+      }
+    }
+    return items;
   }
 
   approveActivity(id: string): ActivityRecord | null {
